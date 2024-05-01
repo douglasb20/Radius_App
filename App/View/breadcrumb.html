@@ -1,0 +1,17 @@
+<div class="pagetitle">
+    <div class="infoBar">
+        {% set bread = getBreadcrumb() %}
+        
+        <h1>{{ bread|last }}</h1>
+        <nav>
+            <ol class="breadcrumb user-select-none">
+                {% for b in bread %}
+                    <li class="breadcrumb-item {{ loop.last ? "active" : "" }} "> {{ b }}</li>
+                {% endfor %}
+            </ol>
+        </nav>
+    </div>
+    <div class="buttonBar pe-3">
+        {{ buttons|raw }}
+    </div>
+</div><!-- End Page Title -->

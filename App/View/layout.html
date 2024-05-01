@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title> {{ getTituloPagina() is empty ?  "LTCFibra" : "LTCFibra | " ~ getTituloPagina() }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/assets/images/logo-ltc.jpg">
+    <!-- CSS -->
+    <!-- <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro-v6@44659d9/css/all.min.css" rel="stylesheet" type="text/css" /> -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/primeui/primeflex.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/primeui/primeui.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/primeui/theme.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/DataTable/datatables.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/fontawesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/sweetalert2/sweetalert2.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/select2/4.1.0/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/vendor/select2/4.1.0/css/select2-bootstrap-5.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/css/admin.css?{{ fileTime('/assets/css/admin.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ ENV.CONTEXT_PATH }}/assets/css/layout.css?{{ fileTime('/assets/css/layout.css') }}">
+
+    <!-- Javascript -->
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/jquery/jquery-3.6.3.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/jquery-loading-overlay/loadingoverlay.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/moment/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/DataTable/datatables.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/jquery-mask-ui/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/sweetalert2/sweetalert2.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/select2/4.1.0/js/select2.min.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/select2/4.1.0/js/pt-BR.js"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/vendor/JustValidate.js/justvalidate.js"></script>
+
+    {% block css %} {% endblock %}
+</head>
+
+<body class="dark">
+
+    <!-- Inicio - Body -->
+    
+    {% if getShowMenu() %}
+        {{ include("menu.html") }}
+        
+        <main id="main" class="main">
+            {% include('breadcrumb.html') with { buttons: block('buttons') ?? '' } %} 
+            <div class="{{ getClassDivContainer() }}">
+                {% block body %} {% endblock %}
+            </div>
+        </main>
+    {% else %}
+        
+        <div class="{{ getClassDivContainer() }}">
+            {{ block('body') }}
+        </div>
+    {% endif %}
+    <!-- Fim - Body -->
+
+    <!-- Inicio - Footer -->
+    {# {% if getShowFooter() %}
+        {{ include('footer.html') }}
+    {% endif %} #}
+    
+
+    <!-- Fim - Footer -->
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="fa-regular fa-arrow-up fa-sm"></i></a>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/js/admin.js?{{ fileTime('/assets/js/admin.js') }}"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/js/mascaras.js?{{ fileTime('/assets/js/mascaras.js') }}"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/js/datatables.js?{{ fileTime('/assets/js/datatables.js') }}"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/js/script.js?{{ fileTime('/assets/js/script.js') }}"></script>
+    <script type="text/javascript" src="{{ ENV.CONTEXT_PATH }}/assets/js/menu.js?{{ fileTime('/assets/js/menu.js') }}"></script>
+</body>
+
+{% block js %} {% endblock %}
+
+</html>

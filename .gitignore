@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.exemple
+/manager
+/files
+/db/seeds/*
+
+oneChange.php

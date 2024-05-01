@@ -1,0 +1,25 @@
+Options -Indexes
+
+php_flag "output_buffering" off
+
+SetEnv ENV_MODE "private"
+
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+Header set Access-Control-Allow-Headers "x-requested-with, Content-Type, origin, authorization, accept, client-security-token"
+# Header add set Access-Control-Max-Age "1000"
+
+# <FilesMatch "\.(pdf)$">
+#     Header set Content-Disposition "inline"
+# </FilesMatch>
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php
+
+RewriteEngine On
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1
+

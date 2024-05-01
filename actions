@@ -1,0 +1,95 @@
+<?php
+
+array_shift($argv);
+if(isset($argv[1])){
+    $argv[1] = ucfirst( $argv[1] );
+}
+
+switch($argv[0]){
+    case 'make:controller':
+        $file = fopen("App\\Controller\\{$argv[1]}Controller.php", "w+");
+        fwrite($file, "<?php
+
+namespace App\Controller;
+
+class {$argv[1]}Controller extends Controller{
+
+}
+
+?>");
+    echo "Controller criado com sucesso !";
+    break;
+    case 'make:class':
+        $file = fopen("App\\Classes\\{$argv[1]}Class.php", "w+");
+        fwrite($file, "<?php
+
+namespace App\Classes;
+
+class {$argv[1]}Class extends \Core\Defaults\DefaultClassController{
+
+}
+
+?>");
+    echo "Classe criado com sucesso !";
+    break;
+    case 'make:model':
+        $nameDao = str_replace("DAO", "", $argv[1]);
+        $tableName = "";
+        if(str_contains($nameDao, "_")){
+            $nameDao = ucwords(strtolower($nameDao), "_");
+            $nameDao = str_replace("_", "", $nameDao);
+        }
+
+
+        foreach(str_split($nameDao) as $key => $letter){
+            if($key === 0){
+                $tableName .= strtolower($letter);
+                continue;
+            }
+            
+            if(ctype_upper($letter)){
+                $tableName .= "_" . strtolower($letter);
+            }else{
+                $tableName .= $letter;
+            }
+        }
+
+        $file = fopen("App\\Model\\{$nameDao}DAO.php", "w+");
+        fwrite($file, "<?php
+
+namespace App\Model;
+
+class {$nameDao}DAO extends \Core\Defaults\DefaultModel{
+    public \$tabela = '{$tableName}';
+}
+
+?>");
+    echo "DAO criado com sucesso !";
+    break;
+
+    case "routes":
+        require_once __DIR__ . '/vendor/autoload.php';
+
+        // new Core\Index;
+        $routes = Core\Router::getRouteList();
+        
+        $all = [...$routes['get'], ...$routes['post'],...$routes['put'], ...$routes['delete']];
+
+        $mask      = "| \e[0;32m%-15.15s\e[0m | \e[0;32m%-35.35s\e[0m | \e[0;32m%-30.30s\e[0m | \e[0;32m%-10s\e[0m | \e[0;32m%-5s\e[0m |\n";
+        $maskTitle = "| \e[0;36m%-15.15s\e[0m | \e[0;36m%-35.35s\e[0m | \e[0;36m%-30.30s\e[0m | \e[0;36m%-10s\e[0m | \e[0;36m%-5s\e[0m |\n";
+        $line      = str_pad("+",18,"-") . str_pad("+",38,"-"). str_pad("+",33,"-").str_pad("+",13,"-").str_pad("+",8,"-")."+\n";
+        printf($line);
+        printf($maskTitle, str_pad("Name",9," ",STR_PAD_LEFT),str_pad("Route",19," ",STR_PAD_LEFT),str_pad("Action",18," ",STR_PAD_LEFT), '  Method', 'Type');
+        printf($line);
+        foreach ($all as $key => $value) {
+            if(gettype($value['action']) === 'string'){
+                printf($mask, $value['alias'],$value['uri'], $value['action'], $value['method'], $value['type']);
+            }else{
+                printf($mask, $value['alias'],$value['uri'], 'Closure Function', $value['method'], $value['type']);
+            }
+        }
+        printf($line);
+
+    break;
+
+}

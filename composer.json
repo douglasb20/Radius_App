@@ -1,0 +1,37 @@
+{
+  "name": "dgframe/api",
+  "description": "Servico de Api",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "App\\": "App/",
+      "Core\\": "Core/"
+    },
+    "files": [
+      "Config/dbConfig.php",
+      "Config/funcoes.php",
+      "Config/mysqliExpression.php",
+      "Config/bootstrap.php",
+      "Config/Constants.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Douglas A. Silva",
+      "email": "douglaassgenesis@gmail.com.br"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^8.0",
+    "vlucas/phpdotenv": "^5.4",
+    "firebase/php-jwt": "^6.3",
+    "twig/twig": "^3.6",
+    "giggsey/libphonenumber-for-php": "^8.13",
+    "robmorgan/phinx": "^0.16.0",
+    "phpmailer/phpmailer": "^6.9",
+    "fakerphp/faker": "^1.23",
+    "twig/intl-extra": "^3.9",
+    "twig/extra-bundle": "^3.9"
+  }
+}

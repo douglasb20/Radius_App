@@ -1,0 +1,143 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+<style>
+</style>
+{% endblock css %}
+
+{% block body %}
+
+<form id="formUser" name="formUser" class="" autocomplete="off">
+    <div class="col-12 ">
+        <div class="card ">
+            <div class="card-header d-flex flex-row justify-content-between align-items-center">
+                <span class="text-title">Perfil do usuário</span>
+            </div>
+            <div class="card-body ">
+                <div class="row g-3 mt-2">
+                    <div class="col-12 col-md-12">
+                        <label for="user_login" class="form-label required-label">Login</label>
+                        <input id="id" value="{{ user.id }}" name="id" type="hidden" >
+                        <input id="user_login" value="{{ user.user_login }}" class="form-control required" name="user_login" type="text" autocomplete="off">
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="user_pass" class="form-label">Senha</label>
+                        <input id="user_pass" class="form-control " name="user_pass" type="password" >
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="confirm_pass" class="form-label">Confirma senha</label>
+                        <input id="confirm_pass" class="form-control " name="confirm_pass" type="password" >
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="user_nome" class="form-label required-label">Nome</label>
+                        <input id="user_nome" value="{{ user.user_nome }}" class="form-control required" name="user_nome" type="text" >
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="user_lastname" class="form-label">Sobrenome</label>
+                        <input id="user_lastname" value="{{ user.user_fullname|replace( {(user.user_nome): "" })|trim }}" class="form-control " name="user_lastname" type="text" >
+                    </div>
+                    <div class="col-12 col-md-12">
+                        <label for="user_email" class="form-label required-label">Email</label>
+                        <input id="user_email" value="{{ user.user_email }}" class="form-control required" name="user_email" type="email" >
+                    </div>
+                    <div class="col-12 col-md-12">
+                        <label for="id_sip" class="form-label required-label">Ramal</label>
+                        <select name="id_sip" id="id_sip" class="form-select">
+                            <option value="">Nenhum ramal</option>
+                            {% for v in sip %}
+                                {% set selected = user.id_sip == v.id_sip ? 'selected'  %}
+                                <option value='{{ v.id_sip }}' {{selected}}>{{ v.id_sip }} - {{ v.callerId }}</option>";
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <button id="btnSalvar" type="submit" class="btn btn-primary" >Salvar</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+{% endblock body %}
+
+{% block js %}
+<script>
+
+const validUser = new JustValidate('#formUser', {
+        // errorLabelCssClass: ['hidden'],
+        errorFieldCssClass: ['invalid'],
+        focusInvalidField: false,
+    });
+
+validUser
+.addField("#user_login", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+    ]
+)
+.addField("#user_nome", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+    ]
+)
+.addField("#user_lastname", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+    ]
+)
+.addField("#user_email", 
+    [
+        {
+            rule: 'required',
+            errorMessage: "Campo não pode ficar em branco"
+        },
+        {
+            rule: 'customRegexp',
+            value: /^[\w|\W]+\@[0-9a-zA-z-]+\.[a-zA-Z]{2,3}(\.[a-zA-z]{2,3})?$/,
+            errorMessage: "Formato de email inválido."
+        },
+    ]
+)
+.addField("#confirm_pass",
+    [
+        {
+            validator: (val, fields) => 
+            {
+                const repeatPasswordValue = $('#user_pass').val();
+                return val === repeatPasswordValue;
+
+            } ,
+            errorMessage: 'Senha de confirmação incorreta.',
+        }
+    ]
+)
+.onSuccess( function(){
+    
+    SaveFormUser()
+} )
+
+const SaveFormUser = () => {
+    let id   = $("#id").val();
+    let form = new FormData( $("#formUser")[0] );
+
+    $.ajax({url: `{{route().link("update-user")}}${id}`,type:"POST",dataType:"json", data: form,processData: false, contentType: false})
+    .done(resp => {
+        alerta("Usuário salvo com sucesso.","Sucesso", "success");
+        validUser.refresh()
+    })
+}
+
+</script>
+{% endblock js %}
