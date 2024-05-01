@@ -4,5 +4,6 @@
 /manager
 /files
 /db/seeds/*
+/vendor
 
 oneChange.php

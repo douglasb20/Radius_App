@@ -4137,5 +4137,7 @@
         }
     ],
     "dev": true,
-    "dev-package-names": []
+    "dev-package-names": [
+        "fakerphp/faker"
+    ]
 }

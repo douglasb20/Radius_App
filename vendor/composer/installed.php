@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'dgframe/api',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-homolog',
+        'version' => 'dev-homolog',
+        'reference' => '43b5ff4a7c95a5d04f9c257d0b72e1f9c221d844',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -56,9 +56,9 @@
             'dev_requirement' => false,
         ),
         'dgframe/api' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-homolog',
+            'version' => 'dev-homolog',
+            'reference' => '43b5ff4a7c95a5d04f9c257d0b72e1f9c221d844',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -71,7 +71,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../fakerphp/faker',
             'aliases' => array(),
-            'dev_requirement' => false,
+            'dev_requirement' => true,
         ),
         'firebase/php-jwt' => array(
             'pretty_version' => 'v6.10.0',
