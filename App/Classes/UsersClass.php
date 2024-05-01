@@ -23,14 +23,16 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       }
     }
 
-    if (!empty($data_de)) {
-      $data_de  = \DateTime::createFromFormat('d/m/Y', $data_de)->format('Y-m-d');
-      $data_ate = \DateTime::createFromFormat('d/m/Y', $data_ate)->format('Y-m-d');
-      $where .= " AND DATE(lastlogin) BETWEEN '$data_de' AND '$data_ate' ";
-    }
-
     $users = $this->UsersDAO->getAll($where);
     return $users;
+  }
+
+  /**
+  * Função para retornar usuário
+  */
+  public function GetUser($id){
+    $user = $this->UsersDAO->getOne(" id = {$id}");
+    return $user;
   }
 
   public function AdicionarUsuario($fields)
@@ -87,16 +89,25 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       "custom_group" => $custom_group,
     ];
 
-    $this->UsersDAO->update($bindUser, " id = {$id}");
+    $this->UsersDAO->update($bindUser, " id = {$id} ");
   }
 
+  /**
+  * Função para solicitar redefinição de senha
+  * @author Douglas A. Silva
+  * @return void
+  */
+  public function RequestReset($id_user){
+    $user = $this->UsersDAO->getOne(" id = {$id_user} ");
+    $this->SendRequestPassword($user['email']);
+  }
 
   /**
    * Função para processar pedido de Password forgotten
    * @author Douglas A. Silva
    * @return void
    */
-  public function SendRequestPassword(string $email)
+  private function SendRequestPassword(string $email)
   {
     $user = $this->UsersDAO->getAll("email = '" . strtolower($email) . "'");
 
@@ -114,7 +125,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     $token = encrypt(json_encode($forgot));
     $url_token = trim(URL_ROOT, "/") . route()->link("recover-password") . $token;
     
-    (new MailClass)->SendRecoverPass($url_token, $user['name'], $user['mail']);
+    (new MailClass)->SendRecoverPass($url_token, $user['name'], $user['email']);
   }
 
   /**
@@ -189,7 +200,6 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     }
   }
 
-
   public function ValidaEmailUser($email, $id_client = null)
   {
     $user = $this->UsersDAO->getAll(" email = '{$email}'");
@@ -203,6 +213,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       }
     }
   }
+
   public function ValidaUsername($username, $id_client = null)
   {
     $user = $this->UsersDAO->getAll(" username = '{$username}'");
@@ -216,4 +227,21 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       }
     }
   }
+
+  /**
+    * Função alterar status do usuário
+    * @author Douglas A. Silva
+    * @param int $id_user id do usuário que irá alterar 
+    * @param int $status status que será alterado
+    * @return void
+    */
+    public function ToggleUserStatus(int $id_user, int $status){
+      try{
+          $this->UsersDAO->update(["status" => $status], "id = {$id_user} ");
+
+      }catch(\Exception $e){
+          throw $e;
+      }
+  }
+
 }

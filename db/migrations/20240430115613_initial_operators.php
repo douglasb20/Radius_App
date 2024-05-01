@@ -24,9 +24,11 @@ final class InitialOperators extends AbstractMigration
       ->addColumn('name', 'string', ['limit' => 75, "null" => false])
       ->addColumn('username', 'string', ['limit' => 50, "null" => false])
       ->addColumn('password', 'string', ['limit' => 90, "null" => false])
+      ->addColumn('email', 'string', ['limit' => 100, "null" => false])
       ->addTimestamps()
       ->addColumn('lastlogin', 'timestamp', ["null" => true])
       ->addColumn('status', 'boolean', ['limit' => 1, "null" => false, "default" => 1])
+      ->addIndex('email', ['unique' => true])
       ->create();
 
       if($this->isMigratingUp()){
@@ -34,6 +36,7 @@ final class InitialOperators extends AbstractMigration
           'name' => 'admin',
           'username' => 'admin',
           'password' => password_hash("admin", PASSWORD_BCRYPT),
+          'email' => 'admin@teste.com',
         ];
 
         $table->insert($bindOperator)->saveData();

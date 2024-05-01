@@ -70,12 +70,6 @@ include("Users/modalFormUser.html") }}
         errorMessage: 'Campo não pode ficar em branco',
       },
     ])
-    .addField('#lastname', [
-      {
-        rule: 'required',
-        errorMessage: 'Campo não pode ficar em branco',
-      },
-    ])
     .addField('#email', [
       {
         rule: 'required',
@@ -109,23 +103,7 @@ include("Users/modalFormUser.html") }}
   $(function () {
     GeraTabela();
     ModalDraggable();
-    $('#data_de').datepicker({
-      endDate: new Date(),
-      todayBtn: 'linked',
-      todayHighlight: true,
-    });
-    $('#data_de')
-      .datepicker()
-      .on('changeDate', function ({ date }) {
-        $('#data_ate').datepicker('setStartDate', date);
-      });
-    $('#data_ate').datepicker('setDate', new Date());
-    $('#data_ate').datepicker({
-      endDate: new Date(),
-      startDate: new Date(),
-      todayBtn: 'linked',
-      todayHighlight: true,
-    });
+    
     $('#user_sts').select2({
       width: '100%',
       dropdownParent: $('#modalFiltrosUsuarios'),
@@ -148,7 +126,6 @@ include("Users/modalFormUser.html") }}
         $(".custom_group_row").hide();
       }else{
         $(".custom_group_row").show();
-
       }
     })
   });
@@ -160,7 +137,7 @@ include("Users/modalFormUser.html") }}
       $('#tableUsers').DataTable({
         columns: [
           { data: 'id', title: '#', className: 'text-center ' },
-          { data: 'name', title: 'Nome', className: 'text-center ' },
+          { data: 'name', title: 'Nome', className: 'text-center w-2' },
           { data: 'username', title: 'Usuário', className: 'text-center ' },
           { data: 'email', title: 'E-mail', className: 'text-center ' },
           { data: 'group', title: 'Grupo', className: 'text-center ', render: renderGroup },
@@ -204,7 +181,7 @@ include("Users/modalFormUser.html") }}
     } else {
       botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 0)" type='button' class='btn btn-danger btn-sm' title='Inativar usuário'><i class="fa-regular fa-xmark"></i></button>`;
     }
-    botoes += `<button onclick="" type='button' class='btn btn-info btn-sm' title='Enviar recuperação de senha'><i class="fa-regular fa-refresh"></i></button>`;
+    botoes += `<button onclick="ConfirmRequestPassword(${row.id})" type='button' class='btn btn-info btn-sm' title='Enviar recuperação de senha'><i class="fa-regular fa-refresh"></i></button>`;
     botoes += '</div>';
 
     return botoes;
@@ -221,20 +198,29 @@ include("Users/modalFormUser.html") }}
     return UcWords(grupo);
   };
 
-  const EditUser = (idUser) => {
+  const EditUser = (id_user) => {
     document.forms['formUser'].reset();
 
-    $.ajax({ url: '' }).done((resp) => {
+    $.ajax({ url: `{{ route().link('get-user') }}${id_user}` }).done((resp) => {
       formUsers.show();
       validUser.refresh();
-      let lastName = resp.user_fullname.replace(resp.user_nome, '').trim();
+      let lastName = resp.name.split(" ");
+      let nome = lastName.shift();
+      let sobrenome = lastName.join(" ").length > 0 ? lastName.join(" ") : '';
+      
       $('#modalFormUser .modal-title').text('Alterar usuário');
       popula_dados('#formUser', resp);
 
-      $('#user_lastname').val(lastName);
-      $(
-        "label[for='user_pass'], label[for='confirm_pass'], label[for='id_group'], label[for='id_sip']",
-      ).removeClass('required-label');
+      $('#lastname').val(sobrenome);
+      $('#name').val(nome);
+      if(resp.group !== "custom"){
+        $(".custom_group_row").hide();
+      }else{
+        $(".custom_group_row").show();
+      }
+      // $(
+      //   "label[for='user_pass'], label[for='confirm_pass'], label[for='id_group'], label[for='id_sip']",
+      // ).removeClass('required-label');
     });
   };
 
@@ -291,19 +277,25 @@ include("Users/modalFormUser.html") }}
     validUser.refresh();
   };
 
-  const RequestPassword = () => {
+  const ConfirmRequestPassword = (id_user) => {
+    confirmaAcao('Confirma enviar a redefinição de senha do usuário?', RequestPassword, id_user);
+  };
 
+  const RequestPassword = (id_user) => {
+    $.ajax({ url: `{{ route().link('request-reset') }}${id_user}` }).done((resp) => {
+      alerta('Solicitação efetuada com sucesso.<br/><br/>Um email foi enviado para o usuário.', 'Sucesso', 'success');
+    });
   }
 
   const ConfirmToggleStatus = (id_user, status) => {
-    let dados = { id_user, id_status };
+    let dados = { id_user, status };
     confirmaAcao('Confirma alterar status do usuário?', ToggleStatusUser, dados);
   };
 
   const ToggleStatusUser = (dados) => {
-    let { id_user, id_status } = dados;
+    let { id_user, status } = dados;
 
-    $.ajax({ url: `` }).done((resp) => {
+    $.ajax({ url: `{{route().link('update-status')}}${id_user}/${status}`, method: 'PUT' }).done((resp) => {
       alerta('Status atualizado com sucesso.', 'Sucesso', 'success');
       GeraTabela();
     });
