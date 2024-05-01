@@ -200,10 +200,11 @@ include("Users/modalFormUser.html") }}
 
     botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
     if (row.status === '0') {
-      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar usuário'><i class="fa-regular fa-check"></button>`;
+      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar usuário'><i class="fa-regular fa-check"></i></button>`;
     } else {
-      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 0)" type='button' class='btn btn-danger btn-sm' title='Inativar usuário'><i class="fa-regular fa-xmark"></button>`;
+      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 0)" type='button' class='btn btn-danger btn-sm' title='Inativar usuário'><i class="fa-regular fa-xmark"></i></button>`;
     }
+    botoes += `<button onclick="" type='button' class='btn btn-info btn-sm' title='Enviar recuperação de senha'><i class="fa-regular fa-refresh"></i></button>`;
     botoes += '</div>';
 
     return botoes;
@@ -290,7 +291,11 @@ include("Users/modalFormUser.html") }}
     validUser.refresh();
   };
 
-  const ConfirmToggleStatus = (id_user, id_status) => {
+  const RequestPassword = () => {
+
+  }
+
+  const ConfirmToggleStatus = (id_user, status) => {
     let dados = { id_user, id_status };
     confirmaAcao('Confirma alterar status do usuário?', ToggleStatusUser, dados);
   };
