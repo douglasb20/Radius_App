@@ -8,69 +8,63 @@ class NasClass extends \Core\Defaults\DefaultClassController
 {
   public \App\Model\NasDAO $NasDAO;
 
-  private function salvaFile($file): string
+  public function AtualizarNas($fields)
   {
-      $text = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      $fileExist = true;
-
-      do {
-        $extensao     = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $nome_arquivo = pathinfo($file['name'], PATHINFO_FILENAME);
-
-        $nome_arquivo  = preg_replace('/\s/', "_", str_replace(".", "", $nome_arquivo));
-        $nome_arquivo  = strtolower(substr($nome_arquivo, 0, 6)) . substr(str_shuffle($text), 0, 6);
-        $nome_arquivo .= "_" . strtotime("now");
-        $nome_arquivo .= "." . $extensao;
-
-        $caminho_completo = PATH_DOCUMENTS . "/{$nome_arquivo}";
-
-        if (!file_exists($caminho_completo)) {
-          $fileExist = false;
-
-          $fileOld = file_get_contents(realpath($file['tmp_name']));
-          $arqFile = fopen($caminho_completo, "w+");
-
-          fwrite($arqFile, $fileOld);
-          fclose($arqFile);
-
-          return $nome_arquivo;
-        }
-      } while ($fileExist);
-  }
-
-  public function AtualizarNas($data, $id_emp)
-  {
-    extract($data);
+    extract($fields);
 
     $nas = $this->NasDAO->getOne(" id = {$id}");
+    $msgLog = "";
 
-    $nas_politica_filename = ($nas_politica_filename === "null" ||  $nas_politica_filename === "") ? null : $nas_politica_filename;
-    $nas_termos_filename   = ($nas_termos_filename === "null" || $nas_termos_filename === "") ? null : $nas_termos_filename;
-
-    if ($nas_politica_status === "1") {
-      if (gettype($nas_politica_filename) !== "string" && !empty($nas_politica_filename)) {
-        $nas_politica_filename = $this->salvaFile($nas_politica_filename);
-      } else if (!empty($nas_politica_filename)) {
-        $nas_politica_filename = pathinfo(parse_url($nas_politica_filename, PHP_URL_PATH), PATHINFO_BASENAME);
-      }
-    } else {
-      $nas_politica_filename = null;
+    if ($nas['nasname'] !== $nasname) {
+      $msgLog .= " nasname de \"{$nas['nasname']}\" para \"{$nasname}\", ";
     }
 
-    if (gettype($nas_termos_filename) !== "string"  && !empty($nas_termos_filename)) {
-      $nas_termos_filename = $this->salvaFile($nas_termos_filename);
-    } else if (!empty($nas_termos_filename)) {
-      $nas_termos_filename = pathinfo(parse_url($nas_termos_filename, PHP_URL_PATH), PATHINFO_BASENAME);
+    if ($nas['description'] !== $description) {
+      $msgLog .= " description de \"{$nas['description']}\" para \"{$description}\", ";
     }
 
-    if (!empty($nas['nas_termos_filename']) && $nas['nas_termos_filename'] !== $nas_termos_filename) {
-      $filename = pathinfo(parse_url($nas['nas_termos_filename'], PHP_URL_PATH), PATHINFO_BASENAME);
-      unlink(PATH_DOCUMENTS . "/{$filename}");
+    if ($nas['secret'] !== $secret) {
+      $msgLog .= " secret de \"{$nas['secret']}\" para \"{$secret}\", ";
     }
 
-    if (!empty($nas['nas_politica_filename']) && $nas['nas_politica_filename'] !== $nas_politica_filename) {
-      $filename = pathinfo(parse_url($nas['nas_politica_filename'], PHP_URL_PATH), PATHINFO_BASENAME);
-      unlink(PATH_DOCUMENTS . "/{$filename}");
+    if ($nas['shortname'] !== $shortname) {
+      $msgLog .= " shortname de \"{$nas['shortname']}\" para \"{$shortname}\", ";
+    }
+
+
+    $bindNas = [
+      "nasname"               => $nasname,
+      "shortname"             => $shortname,
+      "description"           => $description,
+      "secret"                => $secret,
+      "ports"                 => $ports,
+    ];
+
+    $this->NasDAO->update($bindNas, "id = {$id} ");
+
+    $this->setContole(trim("Atualizou as informações da Nas ID: {$id}, " . $msgLog, ", "));
+  }
+
+  public function AtualizarNasStatus($id_nas, $new_status)
+  {
+
+    $nas = $this->NasDAO->getOne(" id = {$id_nas} ");
+
+    $bindNas = [
+      "status"   => $new_status
+    ];
+
+    $this->NasDAO->update($bindNas, "id = {$id_nas} ");
+
+    $this->setContole("Alterou o status da Nas ID: {$id_nas} de {$nas['status']} para {$new_status}");
+  }
+
+  public function AdicionarNas($fields)
+  {
+    extract($fields);
+    $nas = $this->NasDAO->getAll(" nasname = '{$nasname}' ");
+    if (!empty($nas)) {
+      throw new CommomException("Já existe concentradora cadastrada com este IP.");
     }
 
     $bindNas = [
@@ -78,50 +72,10 @@ class NasClass extends \Core\Defaults\DefaultClassController
       "shortname"             => $shortname,
       "description"           => $description,
       "secret"                => $secret,
-      "endereco"              => $endereco,
-      "port"                  => $port,
-      "nas_logo"              => $nas_logo,
-      "nas_politica_status"   => $nas_politica_status,
-      "nas_politica_filename" => $nas_politica_filename,
-      "nas_termos_filename"   => $nas_termos_filename
+      "ports"                  => $ports,
     ];
 
-    $this->NasDAO->update($bindNas, "id = {$id} AND id_emp = {$id_emp}");
-
-    // $this->setContole("Atualizou as informações da Nas ID: {$id}");
-  }
-
-  public function AtualizarNasStatus($id_nas, $new_status, $id_emp)
-  {
-
-      $bindNas = [
-        "status"   => $new_status
-      ];
-
-      $this->NasDAO->update($bindNas, "id = {$id_nas} AND id_emp = {$id_emp}");
-
-      // $this->setContole("Atualizou as informações da Nas ID: {$id}");
-
-  }
-
-  public function AdicionarNas($fields)
-  {
-      extract($fields);
-      $nas = $this->NasDAO->getAll(" nasname = '{$nasname}' ");
-      if(!empty($nas)){
-        throw new CommomException("Já existe concentradora cadastrada com este IP.");
-      }
-
-      $bindNas = [
-        "nasname"               => $nasname,
-        "shortname"             => $shortname,
-        "description"           => $description,
-        "secret"                => $secret,
-        "ports"                  => $ports,
-      ];
-
-      $id = $this->NasDAO->insert($bindNas);
-      $this->setContole("Adicionou NAS id: {$id}, Nome: {$description}, IP: {$nasname}");
-
+    $id = $this->NasDAO->insert($bindNas);
+    $this->setContole("Adicionou NAS id: {$id}, Nome: {$description}, IP: {$nasname}");
   }
 }

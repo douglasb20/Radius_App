@@ -31,14 +31,24 @@ class NasController extends Controller
     $this->data = $nas;
   }
 
+  /**
+  * Função para retornar concentradora
+  * @return void
+  */
+  public function GetNas(){
+    $id = $this->getQuery('id');
+    $nas = $this->NasDAO->getOne(" id = {$id} ");
+
+    $this->data = $nas;
+  }
+
   public function AtualizarNas()
   {
 
     $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 
-    $inputJSON = $this->getPut();
-    $id_emp = $this->getQuery("id_emp");
-    (new NasClass)->AtualizarNas($inputJSON, $id_emp);
+    $fields = $this->getPut();
+    (new NasClass)->AtualizarNas($fields);
 
     $this->masterMysqli->commit();
   }
@@ -47,10 +57,9 @@ class NasController extends Controller
   {
     $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 
-    $id_emp = $this->getQuery("id_emp");
     $id_nas = $this->getQuery("id_nas");
     $status = $this->getQuery("status");
-    (new NasClass)->AtualizarNasStatus($id_nas, $status, $id_emp);
+    (new NasClass)->AtualizarNasStatus($id_nas, $status);
 
     $this->masterMysqli->commit();
   }

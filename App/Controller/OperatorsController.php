@@ -13,6 +13,7 @@ class OperatorsController extends Controller
   * @return void
   */
   public function UpdatePassword(): void{
+    $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
     $this->CheckSession();
     $fields = $this->getPut();
     extract($fields);
@@ -23,5 +24,7 @@ class OperatorsController extends Controller
 
     $this->OperatorsDAO->update($bindPass, " id = " . GetSessao('id_usuario') );
     $this->setContole("Alterou a própria senha");
+
+    $this->masterMysqli->commit();
   }
 }

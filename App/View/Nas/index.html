@@ -190,7 +190,7 @@
   const EditNas = (id_nas) => {
     document.forms['formNas'].reset();
 
-    $.ajax({ url: `` }).done((resp) => {
+    $.ajax({ url: `{{ route().link('get-nas') }}${id_nas}` }).done((resp) => {
       validNas.refresh();
       
       $('#modalFormNas .modal-title').text('Alterar concentradora');
@@ -219,7 +219,7 @@
       url = `{{ route().link('add-nas') }}`;
       method = "POST"
     } else {
-      url = ``;
+      url = `{{ route().link('update-nas') }}`;
       method = "PUT"
     }
 
@@ -254,7 +254,7 @@
   const ToggleStatusNas = (dados) => {
     let { id_nas, status } = dados;
 
-    $.ajax({ url: ``, method: 'PUT' }).done((resp) => {
+    $.ajax({ url: `{{ route().link('change-status')}}${id_nas}/${status}`, method: 'PUT' }).done((resp) => {
       alerta('Status atualizado com sucesso.', 'Sucesso', 'success');
       GeraTabela();
     });
