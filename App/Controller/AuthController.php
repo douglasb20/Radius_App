@@ -38,5 +38,10 @@ class AuthController extends Controller
       throw $e;
     }
   }
+
+  public function Logout(){
+    (new OperatorsClass)->Logout();
+    route()->redirect( route()->link('login-page') );
+  }
   
 }

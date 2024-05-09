@@ -83,27 +83,11 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
         throw new \Exception("Usuário inativo.", -1);
       }
 
-      $actual_link = URL_ROOT;
-
-      $token = [
-        "iss"        => $actual_link,
-        "aud"        => $actual_link,
-        "sub"        => $user['id'],
-        "id"         => $user['id'],
-        "name"       => $user['name'],
-        "last_login" => $user['lastlogin'],
-        "iat"        => time(),
-        "exp"        => (time() +  ((60 * 60) * 8))  // numero 2 é a quantidade de horas que irá expirar
-      ];
-
-      $jwt = JWT::encode($token, $_ENV['KEY_JWT'], 'HS256');
-
       SetSessao("id_usuario", $user['id']);
       SetSessao("nome_usuario", $user['name']);
       SetSessao("autenticado", true);
       SetSessao("lifetime", date('Y-m-d H:i:s', strtotime('+6 hours')));
       SetSessao("lastlogin", $user['lastlogin']);
-      SetSessao("jwt", $jwt);
 
       $bindUser = [
         "lastlogin"      => date("Y-m-d H:i:s")
@@ -114,6 +98,11 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     } catch (\Exception $e) {
       throw $e;
     }
+  }
+
+  public function Logout(){
+    $this->setContole("Saiu do sistema");
+    clearSessao();
   }
 
   public function AtualizaUsuario($data, $id_emp)

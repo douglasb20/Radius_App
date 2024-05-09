@@ -154,7 +154,7 @@ const caixaAlerta = Swal.mixin({
 function confirmaAcao(
   texto,
   callback,
-  dados,
+  dados = [],
   titulo = "Confirmação",
   btn_confirma = "Sim",
   btn_cancela = "Não"

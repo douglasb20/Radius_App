@@ -1,59 +1,77 @@
-if ($("#sidebar").length > 0) {
-    route = window.location.pathname === "" ? "/" : window.location.pathname;
-    
-    $(".nav-link").addClass("collapsed");
-    let menu_route = $(`#sidebar [href="${route}"]`);
+if ($('#sidebar').length > 0) {
+  route = window.location.pathname === '' ? '/' : window.location.pathname;
 
-    if (menu_route.parents("ul").hasClass("nav-content")) {
-        menu_route.parents("ul").addClass("show");
-        menu_route.addClass("active");
-        menu_route.parents(".nav-item").find(".nav-link").removeClass("collapsed")
-    } else {
-        menu_route.removeClass("collapsed");
-    }
+  $('.nav-link').addClass('collapsed');
+  let menu_route = $(`#sidebar [href="${route}"]`);
 
+  if (menu_route.parents('ul').hasClass('nav-content')) {
+    menu_route.parents('ul').addClass('show');
+    menu_route.addClass('active');
+    menu_route.parents('.nav-item').find('.nav-link').removeClass('collapsed');
+  } else {
+    menu_route.removeClass('collapsed');
+  }
 }
-
-// $("#sidebar .nav-item a").not('[data-bs-toggle="collapse"]').click(() => StartLoading())
 
 window.onload = () => EndLoading();
 window.addEventListener('beforeunload', () => StartLoading());
 
-let modalPassword = new bootstrap.Modal("#modalUpdatePassword", modalOption); 
-$("#chageUserPass").click(function () {
-    $("#formUpdatePass input").not("input[type=hidden]").val("")
-    modalPassword.show();
-    ModalDraggable();
-})
+const validFormPass = new JustValidate('#formUpdatePass', {
+  // errorLabelCssClass: ['hidden'],
+  errorFieldCssClass: ['invalid'],
+  focusInvalidField: false,
+});
 
-$("#btnSalvarPassword").click(function () {
-    const password        = $("#formUpdatePass #change_user_pass");
-    const confirmPassword = $("#formUpdatePass #confirm_change_pass");
+validFormPass
+  .addField('#change_operator_pass', [
+    {
+      rule: 'required',
+      errorMessage: 'Campo não pode ficar em branco',
+    },
+    {
+      rule: 'minLength',
+      value: 4,
+      errorMessage: 'Senha deve ter mais de 4 dígitos',
+    },
+  ])
+  .addField('#confirm_change_pass', [
+    {
+      rule: 'required',
+      errorMessage: 'Campo não pode ficar em branco',
+    },
+    {
+      validator: (val) => $('#formUpdatePass #change_operator_pass').val() === val,
+      errorMessage: 'Senhas não coincidem',
+    },
+  ])
+  .onSuccess(function () {
+    confirmaAcao(`Confirma a alteraração de senha?`, UpdatePasswordUser);
+  });
 
-    if(password.val() !== confirmPassword.val()){
-        alerta("Senhas não coincidem.", "Erro validação", "error");
-        return;
-    }
-
-    const frm = required_elements($("#formUpdatePass .required"));
-
-    if(!frm.valid){
-        alerta("Campos obrigatórios não preenchidos", "Erro validação", "error")
-    }else{
-        confirmaAcao(`Confirma alterar senha ?`, UpdatePasswordUser, [])
-    }
-})
+let modalPassword = new bootstrap.Modal('#modalUpdatePassword', modalOption);
+$('#chageUserPass').click(function () {
+  $('#formUpdatePass input').not('input[type=hidden]').val('');
+  validFormPass.refresh();
+  modalPassword.show();
+  ModalDraggable();
+});
 
 const UpdatePasswordUser = () => {
-    let form = new FormData( $("#formUpdatePass")[0] );
-    
-    $.ajax({url: $("#url_req").val(),type:"POST",dataType:"json", data: form, processData: false, contentType: false})
-    .done(resp => {
-        alerta("Senha atualizado com sucesso.", "Sucesso", "success");
-        CloseModalPassword()
-    })
-}
+  let form = new FormData($('#formUpdatePass')[0]);
+
+  $.ajax({
+    url: $('#url_req').val(),
+    type: 'PUT',
+    dataType: 'json',
+    data: form,
+    processData: false,
+    contentType: false,
+  }).done((resp) => {
+    alerta('Senha atualizado com sucesso.', 'Sucesso', 'success');
+    CloseModalPassword();
+  });
+};
 
 const CloseModalPassword = () => {
-    modalPassword.hide()
-}
+  modalPassword.hide();
+};

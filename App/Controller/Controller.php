@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Exceptions\CommomException;
+use App\Exceptions\UnauthorizedException;
 
 class Controller extends \Core\Defaults\DefaultController
 {
@@ -14,15 +15,15 @@ class Controller extends \Core\Defaults\DefaultController
     $this->render("404");
   }
 
-  public function CheckSession()
+  public function CheckSession($redirect = false)
   {
-    try {
-      if (!$this->validateAuth()) {
+    if (!$this->validateAuth()) {
+      if($redirect){
         route()->redirect("login");
         die();
       }
-    } catch (\Exception $e) {
-      throw $e;
+
+      throw new UnauthorizedException("Sua sessão foi expirada, recarregue a página para renovar sua sessão");
     }
   }
 }
