@@ -28,9 +28,10 @@ class UsersClass extends \Core\Defaults\DefaultClassController
   }
 
   /**
-  * Função para retornar usuário
-  */
-  public function GetUser($id){
+   * Função para retornar usuário
+   */
+  public function GetUser($id)
+  {
     $user = $this->UsersDAO->getOne(" id = {$id}");
     return $user;
   }
@@ -54,10 +55,11 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       "email" => $email,
       "name" => $nome_completo,
       "group" => $group,
-      "custom_group" => $custom_group,
+      "custom_group" => mb_strtolower($custom_group),
     ];
 
-    $this->UsersDAO->insert($bindUser);
+    $id = $this->UsersDAO->insert($bindUser);
+    $this->setContole("Adicionou usuário id: {$id}, Nome: {$nome_completo}");
     $this->SendRequestPassword($email);
   }
 
@@ -86,20 +88,23 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       "email" => $email,
       "name" => $nome_completo,
       "group" => $group,
-      "custom_group" => $custom_group,
+      "custom_group" => mb_strtolower($custom_group),
     ];
 
     $this->UsersDAO->update($bindUser, " id = {$id} ");
+    $this->setContole("Alterou usuário id: {$id}, Nome: {$nome_completo}");
   }
 
   /**
-  * Função para solicitar redefinição de senha
-  * @author Douglas A. Silva
-  * @return void
-  */
-  public function RequestReset($id_user){
+   * Função para solicitar redefinição de senha
+   * @author Douglas A. Silva
+   * @return void
+   */
+  public function RequestReset($id_user)
+  {
     $user = $this->UsersDAO->getOne(" id = {$id_user} ");
     $this->SendRequestPassword($user['email']);
+    $this->setContole("Enviou reset de senha do usuário id: {$user['id']}, Nome: {$user['name']}");
   }
 
   /**
@@ -124,7 +129,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
 
     $token = encrypt(json_encode($forgot));
     $url_token = trim(URL_ROOT, "/") . route()->link("recover-password") . $token;
-    
+
     (new MailClass)->SendRecoverPass($url_token, $user['name'], $user['email']);
   }
 
@@ -229,19 +234,16 @@ class UsersClass extends \Core\Defaults\DefaultClassController
   }
 
   /**
-    * Função alterar status do usuário
-    * @author Douglas A. Silva
-    * @param int $id_user id do usuário que irá alterar 
-    * @param int $status status que será alterado
-    * @return void
-    */
-    public function ToggleUserStatus(int $id_user, int $status){
-      try{
-          $this->UsersDAO->update(["status" => $status], "id = {$id_user} ");
-
-      }catch(\Exception $e){
-          throw $e;
-      }
+   * Função alterar status do usuário
+   * @author Douglas A. Silva
+   * @param int $id_user id do usuário que irá alterar 
+   * @param int $status status que será alterado
+   * @return void
+   */
+  public function ToggleUserStatus(int $id_user, int $status)
+  {
+    $user = $this->UsersDAO->getOne(" id = {$id_user} ");
+    $this->UsersDAO->update(["status" => $status], "id = {$id_user} ");
+    $this->setContole("Alterou o status do usuário id: {$id_user} de {$user['status']} para {$status}");
   }
-
 }

@@ -2,6 +2,8 @@
 
 namespace App\Classes;
 
+use App\Exceptions\CommomException;
+
 class NasClass extends \Core\Defaults\DefaultClassController
 {
   public \App\Model\NasDAO $NasDAO;
@@ -102,37 +104,12 @@ class NasClass extends \Core\Defaults\DefaultClassController
 
   }
 
-  public function AdicionarNas($data, $id_emp)
+  public function AdicionarNas($fields)
   {
-      extract($data);
-
-      $nas_politica_filename = ($nas_politica_filename === "null" ||  $nas_politica_filename === "") ? null : $nas_politica_filename;
-      $nas_termos_filename   = ($nas_termos_filename === "null" || $nas_termos_filename === "") ? null : $nas_termos_filename;
-
-      if ($nas_politica_status === "1") {
-        if (gettype($nas_politica_filename) !== "string" && !empty($nas_politica_filename)) {
-          $nas_politica_filename = $this->salvaFile($nas_politica_filename);
-        } else if (!empty($nas_politica_filename)) {
-          $nas_politica_filename = pathinfo(parse_url($nas_politica_filename, PHP_URL_PATH), PATHINFO_BASENAME);
-        }
-      } else {
-        $nas_politica_filename = null;
-      }
-
-      if (gettype($nas_termos_filename) !== "string"  && !empty($nas_termos_filename)) {
-        $nas_termos_filename = $this->salvaFile($nas_termos_filename);
-      } else if (!empty($nas_termos_filename)) {
-        $nas_termos_filename = pathinfo(parse_url($nas_termos_filename, PHP_URL_PATH), PATHINFO_BASENAME);
-      }
-
-      if (!empty($nas['nas_termos_filename']) && $nas['nas_termos_filename'] !== $nas_termos_filename) {
-        $filename = pathinfo(parse_url($nas['nas_termos_filename'], PHP_URL_PATH), PATHINFO_BASENAME);
-        unlink(PATH_DOCUMENTS . "/{$filename}");
-      }
-
-      if (!empty($nas['nas_politica_filename']) && $nas['nas_politica_filename'] !== $nas_politica_filename) {
-        $filename = pathinfo(parse_url($nas['nas_politica_filename'], PHP_URL_PATH), PATHINFO_BASENAME);
-        unlink(PATH_DOCUMENTS . "/{$filename}");
+      extract($fields);
+      $nas = $this->NasDAO->getAll(" nasname = '{$nasname}' ");
+      if(!empty($nas)){
+        throw new CommomException("Já existe concentradora cadastrada com este IP.");
       }
 
       $bindNas = [
@@ -140,15 +117,11 @@ class NasClass extends \Core\Defaults\DefaultClassController
         "shortname"             => $shortname,
         "description"           => $description,
         "secret"                => $secret,
-        "endereco"              => $endereco,
-        "port"                  => $port,
-        "nas_logo"              => $nas_logo,
-        "nas_politica_status"   => $nas_politica_status,
-        "nas_politica_filename" => $nas_politica_filename,
-        "nas_termos_filename"   => $nas_termos_filename,
-        "id_emp"                => $id_emp
+        "ports"                  => $ports,
       ];
 
-      $this->NasDAO->insert($bindNas);
+      $id = $this->NasDAO->insert($bindNas);
+      $this->setContole("Adicionou NAS id: {$id}, Nome: {$description}, IP: {$nasname}");
+
   }
 }

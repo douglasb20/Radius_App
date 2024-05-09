@@ -114,13 +114,6 @@ include("Users/modalFormUser.html") }}
       GeraTabela();
       filtrosUsers.hide();
     });
-    $('.selectAll').change(function (e) {
-      $(this)
-        .parents('.permissions-list')
-        .find('.form-check-input')
-        .not(this)
-        .prop('checked', this.checked);
-    });
     $("#group").change(function(){
       if($(this).val() !== "custom"){
         $(".custom_group_row").hide();
@@ -202,7 +195,7 @@ include("Users/modalFormUser.html") }}
     document.forms['formUser'].reset();
 
     $.ajax({ url: `{{ route().link('get-user') }}${id_user}` }).done((resp) => {
-      formUsers.show();
+      
       validUser.refresh();
       let lastName = resp.name.split(" ");
       let nome = lastName.shift();
@@ -218,23 +211,20 @@ include("Users/modalFormUser.html") }}
       }else{
         $(".custom_group_row").show();
       }
-      // $(
-      //   "label[for='user_pass'], label[for='confirm_pass'], label[for='id_group'], label[for='id_sip']",
-      // ).removeClass('required-label');
+      formUsers.show();
     });
   };
 
   const NewUser = () => {
     document.forms['formUser'].reset();
-    formUsers.show();
     $(".custom_group_row").hide();
     validUser.refresh();
     $('#id').val('');
     $('#user_pass, #confirm_pass').addClass('required');
     $("label[for='user_pass'], label[for='confirm_pass']").addClass('required-label');
-
-    remove_required($('#formUser .required'));
+    
     $('#modalFormUser .modal-title').text('Novo usuário');
+    formUsers.show();
   };
 
   const SaveFormUser = () => {

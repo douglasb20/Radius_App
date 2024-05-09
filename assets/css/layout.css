@@ -166,6 +166,14 @@ footer {
   font-weight: bold;
 }
 
+input.form-control:hover:not(:focus){
+  border-color: #86b7fe;
+}
+
+.form-control:focus{
+  box-shadow: none;
+}
+
 .card-header:first-child {
   border-radius: 8px 8px 0 0;
 }
@@ -178,4 +186,8 @@ footer {
 
 .form-label{
   margin: 0;
+}
+
+.just-validate-error-label{
+  font-size: 0.80rem
 }

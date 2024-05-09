@@ -13,7 +13,7 @@ use \App\Services\TwigService;
 class DefaultController
 {
 
-  public $masterMysqli;
+  public ?\mysqli $masterMysqli = null;
   private TwigService $twig;
   public $id_usuario         = "";
   public $retorno            = [];
@@ -30,8 +30,7 @@ class DefaultController
   private bool $mostraMenu   = true;
 
   private static string $typeAuth   = "jwt";
-
-  public $ControleDAO;
+  public \App\Model\LogDAO $LogDAO;
 
   private $post              = [];
   private $put               = [];
@@ -348,11 +347,11 @@ class DefaultController
   {
     try {
       $bindControle = [
-        "id_usu" => $GLOBALS['_ID_USUARIO'],
-        "evento" => $msg
+        "user_id" => GetSessao('id_usuario'),
+        "description" => $msg
       ];
 
-      $this->ControleDAO->insert($bindControle);
+      $this->LogDAO->insert($bindControle);
     } catch (\Exception $e) {
       throw $e;
     }

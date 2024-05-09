@@ -2,9 +2,12 @@
 
 namespace Core\Defaults;
 
+use mysqli;
+
 abstract class DefaultClassController
 {
-  public $masterMysqli;
+  public ?mysqli $masterMysqli;
+  public \App\Model\LogDAO $LogDAO;
 
   function __construct()
   {
@@ -91,6 +94,20 @@ abstract class DefaultClassController
           include_once $path;
         }
       }
+    } catch (\Exception $e) {
+      throw $e;
+    }
+  }
+
+  public function setContole($msg = "")
+  {
+    try {
+      $bindControle = [
+        "user_id" => GetSessao('id_usuario'),
+        "description" => $msg
+      ];
+
+      $this->LogDAO->insert($bindControle);
     } catch (\Exception $e) {
       throw $e;
     }

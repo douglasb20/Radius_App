@@ -8,25 +8,25 @@ class NasController extends Controller
 {
   public \App\Model\NasDAO $NasDAO;
 
+  public function Index()
+  {
+    $this->CheckSession();
+
+    $this->setTituloPagina("Lista de concentradoras");
+    $this->setClassDivContainer("container");
+
+    $this->render("Nas");
+  }
+
   public function ListarNas()
   {
-    extract($this->getQuery());
-    $where = " id_emp = {$id_emp}";
+    extract($this->getPost());
+    $where = "1=1";
     if ($status !== "-1") {
       $where .= " AND status = {$status}";
     }
 
     $nas = $this->NasDAO->getAll($where);
-
-    foreach ($nas as $key => $n) {
-      if (!empty($n['nas_termos_filename'])) {
-        $nas[$key]['nas_termos_filename'] = URL_DOCUMENTS . "/{$n['nas_termos_filename']}";
-      }
-
-      if (!empty($n['nas_politica_filename'])) {
-        $nas[$key]['nas_politica_filename'] = URL_DOCUMENTS . "/{$n['nas_politica_filename']}";
-      }
-    }
 
     $this->data = $nas;
   }
@@ -59,9 +59,8 @@ class NasController extends Controller
   {
     $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
 
-    $inputJSON = $this->getPost();
-    $id_emp = $this->getQuery("id_emp");
-    (new NasClass)->AdicionarNas($inputJSON, $id_emp);
+    $fields = $this->getPost();
+    (new NasClass)->AdicionarNas($fields);
 
     $this->masterMysqli->commit();
   }

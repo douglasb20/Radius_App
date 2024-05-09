@@ -1,0 +1,117 @@
+<div
+  id="modalFormNas"
+  class="modal fade"
+  tabindex="-1"
+>
+  <div class="modal-dialog ">
+    <form
+      id="formNas"
+      name="formNas"
+      autocomplete="off"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nova concentradora</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row">
+            <div class="col-12 col-md-12">
+              <label
+                for="nasname"
+                class="form-label required-label"
+                >Nasname(IP)</label
+              >
+              <input
+                id="id"
+                class="form-control"
+                name="id"
+                type="hidden"
+              />
+              <input
+                id="nasname"
+                class="form-control"
+                name="nasname"
+                type="text"
+                autocomplete="off"
+              />
+            </div>
+            <div class="col-12 col-md-12">
+              <label
+                for="shortname"
+                class="form-label required-label"
+                >Shortname</label
+              >
+              <input
+                id="shortname"
+                class="form-control"
+                name="shortname"
+              />
+            </div>
+            <div class="col-12 col-md-12">
+              <label
+                for="ports"
+                class="form-label required-label"
+                >Port</label
+              >
+              <input
+                id="ports"
+                class="form-control"
+                name="ports"
+                type="text"
+                value="2525"
+              />
+            </div>
+            <div class="col-12 col-md-12">
+              <label
+                for="description"
+                class="form-label required-label"
+                >Description</label
+              >
+              <input
+                id="description"
+                class="form-control"
+                name="description"
+                type="text"
+              />
+            </div>
+            <div class="col-12 col-md-12">
+              <label
+                for="secret"
+                class="form-label required-label"
+                >Secret</label
+              >
+              <input
+                id="secret"
+                class="form-control"
+                name="secret"
+                type="text"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button
+            onclick="CloseModal()"
+            type="button"
+            class="btn btn-outline-danger"
+          >
+            Cancelar
+          </button>
+          <button
+            id="btnSalvar"
+            type="submit"
+            class="btn btn-primary"
+          >
+            Salvar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

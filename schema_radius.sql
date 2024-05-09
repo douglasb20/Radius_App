@@ -155,6 +155,7 @@ CREATE TABLE IF NOT EXISTS nas (
   server varchar(64),
   community varchar(50),
   description varchar(200) DEFAULT 'RADIUS Client',
+  status tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (id),
   KEY nasname (nasname)
 ) ENGINE = INNODB;
@@ -167,18 +168,3 @@ CREATE TABLE IF NOT EXISTS nasreload (
   reloadtime datetime NOT NULL,
   PRIMARY KEY (nasipaddress)
 ) ENGINE = INNODB;
-
-# -- Não remover esta linha abaixo, pois funciona para fazer o up e down do migrate
-#--//@UNDO
-
-DROP TABLE IF EXISTS radacct;
-DROP TABLE IF EXISTS radcheck;
-DROP TABLE IF EXISTS radgroupcheck;
-DROP TABLE IF EXISTS radgroupreply;
-DROP TABLE IF EXISTS radreply;
-DROP TABLE IF EXISTS radusergroup;
-DROP TABLE IF EXISTS radpostauth;
-DROP TABLE IF EXISTS nas;
-DROP TABLE IF EXISTS nasreload;
-
-

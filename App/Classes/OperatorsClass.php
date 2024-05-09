@@ -110,6 +110,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
       ];
 
       $this->OperatorsDAO->update($bindUser, "id = '{$user['id']}'");
+      $this->setContole("Entrou no sistema");
     } catch (\Exception $e) {
       throw $e;
     }

@@ -24,7 +24,7 @@ final class InitialUsers extends AbstractMigration
       ->addColumn('name', 'string', ['limit' => 75, "null" => false])
       ->addColumn('email', 'string', ['limit' => 100, "null" => false])
       ->addColumn('username', 'string', ['limit' => 50, "null" => false])
-      ->addColumn('password', 'string', ['limit' => 40, "null" => false])
+      ->addColumn('password', 'string', ['limit' => 20, "null" => false])
       ->addColumn('group', 'string', ['limit' => 10, "null" => false])
       ->addColumn('custom_group', 'string', ['limit' => 30, "null" => true])
       ->addTimestamps()
