@@ -39,4 +39,23 @@ class MailClass extends \Core\Defaults\DefaultClassController
       }
     }
   }
+
+    /**
+   * Função para processar pedido de Password forgotten
+   * @author Douglas A. Silva
+   * @return void
+   */
+  public function SendRequestPassword(array $fields)
+  {
+
+    $forgot = [
+      "id"           => $fields['id'],
+      "expires"      => date("Y-m-d H:i:s", strtotime("+ 30 minutes"))
+    ];
+
+    $token = encrypt(json_encode($forgot));
+    $url_token = trim(URL_ROOT, "/") . route()->link("recover-password") . $token;
+
+    $this->SendRecoverPass($url_token, $fields['name'], $fields['email']);
+  }
 }

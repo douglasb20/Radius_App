@@ -105,46 +105,87 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     clearSessao();
   }
 
-  public function AtualizaUsuario($data, $id_emp)
+  
+  public function ListOperators($fields)
   {
-    extract($data);
-    unset($data['id']);
+    extract($fields);
+    $where = "1=1";
 
-    $this->ValidaEmailUser($user_email, $id_emp, $id);
-    $data['user_nome'] = explode(" ", $user_fullname)[0];
-
-    $bindUser = [
-      "user_nome"     => explode(" ", $user_fullname)[0],
-      "user_fullname" => strtoupper($user_fullname),
-      "user_email"    => mb_strtolower($user_email),
-    ];
-
-    $this->UsersDAO->update($bindUser, "id = {$id} AND id_emp = {$id_emp}");
-  }
-
-
-  public function AdicionarUsuario($data, $id_emp)
-  {
-    extract($data);
-    $this->ValidaEmailUser($user_email, $id_emp);
-
-    $bindNewUser = [
-      "user_fullname" => $user_fullname,
-      "user_nome"     => explode(" ", $user_fullname)[0],
-      "user_email"    => mb_strtolower($user_email),
-      "user_sys_pass" => password_hash("Mudar@123", PASSWORD_BCRYPT),
-      "user_pass"     => new \MysqliExpression("aes_encrypt('Mudar@123','lanteca')"),
-      "user_sts"      => "1",
-      "id_emp"        => $id_emp
-    ];
-
-    if (isset($user_mgr)) {
-      $bindNewUser["user_mgr"] = $user_mgr;
-      $bindNewUser["id_emp"]   = null;
-      $id_emp                  = null;
+    if (is_array($status)) {
+      $status = implode("','", $status);
+      $where .= " AND status in ('{$status}')";
+    } else {
+      if ($status !== "-1") {
+        $where .= " AND status = '{$status}'";
+      }
     }
 
-    $this->UsersDAO->insert($bindNewUser);
+    $operators = $this->OperatorsDAO->getAll($where);
+    return $operators;
+  }
+
+  /**
+   * Função para retornar usuário
+   */
+  public function GetOperator($id)
+  {
+    $operator = $this->OperatorsDAO->getOne(" id = {$id}");
+    return $operator;
+  }
+
+  public function AddOperator($fields)
+  {
+    extract($fields);
+    $this->ValidaEmailUser($email);
+    $this->ValidaUsername($username);
+    $nome_completo = "";
+    $nome = ucfirst(trim(mb_strtolower($name)));
+    if (!empty($lastname)) {
+      $sobrenome = ucwords(trim(mb_strtolower($lastname)));
+      $nome_completo = "{$nome} {$sobrenome}";
+    } else {
+      $nome_completo = $nome;
+    }
+
+    $bindOperator = [
+      "email" => $email,
+      "name" => $nome_completo,
+      "username" => $username,
+      "password" => password_hash("123", PASSWORD_BCRYPT),
+    ];
+
+    $id = $this->OperatorsDAO->insert($bindOperator);
+    $field = [
+      'id' => $id,
+      'name' => $nome_completo,
+      'email' => $email
+    ];
+    $this->setContole("Adicionou operador id: {$id}, Nome: {$nome_completo}");
+    (new MailClass)->SendRequestPassword($field);
+  }
+
+  public function UpdateOperator($fields)
+  {
+    extract($fields);
+    $this->ValidaEmailUser($email, $id);
+    $this->ValidaUsername($username, $id);
+    $nome_completo = "";
+    $nome = ucfirst(trim(mb_strtolower($name)));
+    if (!empty($lastname)) {
+      $sobrenome = ucwords(trim(mb_strtolower($lastname)));
+      $nome_completo = "{$nome} {$sobrenome}";
+    } else {
+      $nome_completo = $nome;
+    }
+
+    $bindOperator = [
+      "email" => $email,
+      "name" => $nome_completo,
+      "username" => $username,
+    ];
+
+    $this->OperatorsDAO->update($bindOperator, "id = {$id}");
+    $this->setContole("Alterou operador id: {$id}");
   }
 
   public function ResetSenha($data, $id_emp)
@@ -262,17 +303,40 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     }
   }
 
-  public function ValidaEmailUser($email, $id_emp, $id_client = null)
+  public function ValidaEmailUser($email, $id_operator = null)
   {
-    $user = $this->UsersDAO->getAll(" user_email = '{$email}' AND id_emp={$id_emp}");
-    if (count($user) > 0) {
-      if (!empty($id_client)) {
-        if ($id_client !== $user[0]["id"]) {
-          throw new CommomException("Já existe um usuário cadastrado com esse email, por favor, tente outro email.");
+    $operator = $this->OperatorsDAO->getAll(" email = '{$email}'");
+    if (count($operator) > 0) {
+      if (!empty($id_operator)) {
+        if ($id_operator !== $operator[0]["id"]) {
+          throw new CommomException("Já existe um operador cadastrado com esse email, por favor, tente outro email.");
         }
       } else {
-        throw new CommomException("Já existe um usuário cadastrado com esse email, por favor, tente outro email.");
+        throw new CommomException("Já existe um operador cadastrado com esse email, por favor, tente outro email.");
       }
     }
   }
+
+  
+  public function ValidaUsername($username, $id_client = null)
+  {
+    $operator = $this->OperatorsDAO->getAll(" username = '{$username}'");
+    if (count($operator) > 0) {
+      if (!empty($id_client)) {
+        if ($id_client !== $operator[0]["id"]) {
+          throw new CommomException("Já existe um operador cadastrado com esse username, por favor, tente outro username.");
+        }
+      } else {
+        throw new CommomException("Já existe um operador cadastrado com esse username, por favor, tente outro username.");
+      }
+    }
+  }
+
+  public function ToggleOperatorStatus(int $id_operator, int $status)
+  {
+    $user = $this->OperatorsDAO->getOne(" id = {$id_operator} ");
+    $this->OperatorsDAO->update(["status" => $status], "id = {$id_operator} ");
+    $this->setContole("Alterou o status do operador id: {$id_operator} de {$user['status']} para {$status}");
+  }
+
 }

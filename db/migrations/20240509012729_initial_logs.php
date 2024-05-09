@@ -8,17 +8,17 @@ final class InitialLogs extends AbstractMigration
 {
   public function change(): void
   {
-    $table = $this->table('log');
+    $table = $this->table('logs');
     $table
-      ->addColumn('user_id', 'integer',  ['null' => false])
-      ->addTimestamps(null, false)
+      ->addColumn('operator_id', 'integer',  ['null' => false])
+      ->addTimestamps('event_date', false)
       ->addColumn('description', 'string', ['limit' => 255, "null" => false])
       ->addIndex(
-        'created_at',
+        'event_date',
         [
           'unique' => false,
-          'name' => 'created_at_idx',
-          'order' => ['created_at' => 'ASC']
+          'name' => 'event_date_idx',
+          'order' => ['event_date' => 'ASC']
         ]
       )
       ->create();

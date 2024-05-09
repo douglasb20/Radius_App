@@ -17,4 +17,10 @@ class OperatorsDAO extends \Core\Defaults\DefaultModel
       throw $e;
     }
   }
+
+  public function SelectOperators(){
+    $query = "SELECT id, name FROM {$this->tabela} WHERE status = 1";
+    return $this->executeQuery($query);
+  }
+
 }

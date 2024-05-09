@@ -59,8 +59,13 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     ];
 
     $id = $this->UsersDAO->insert($bindUser);
+    $fields = [
+      'id' => $id,
+      'name' => $nome_completo,
+      'email' => $email
+    ];
     $this->setContole("Adicionou usuário id: {$id}, Nome: {$nome_completo}");
-    $this->SendRequestPassword($email);
+    (new MailClass)->SendRequestPassword($fields);
   }
 
   public function AtualizaUsuario($fields)
@@ -103,34 +108,13 @@ class UsersClass extends \Core\Defaults\DefaultClassController
   public function RequestReset($id_user)
   {
     $user = $this->UsersDAO->getOne(" id = {$id_user} ");
-    $this->SendRequestPassword($user['email']);
-    $this->setContole("Enviou reset de senha do usuário id: {$user['id']}, Nome: {$user['name']}");
-  }
-
-  /**
-   * Função para processar pedido de Password forgotten
-   * @author Douglas A. Silva
-   * @return void
-   */
-  private function SendRequestPassword(string $email)
-  {
-    $user = $this->UsersDAO->getAll("email = '" . strtolower($email) . "'");
-
-    if (empty($user)) {
-      throw new CommomException("Email não localizado.");
-    }
-
-    $user = $user[0];
-
-    $forgot = [
-      "id"           => $user['id'],
-      "expires"      => date("Y-m-d H:i:s", strtotime("+ 30 minutes"))
+    $fields = [
+      'id' => $user['id'],
+      'name' => $user['name'],
+      'email' => $user['email']
     ];
-
-    $token = encrypt(json_encode($forgot));
-    $url_token = trim(URL_ROOT, "/") . route()->link("recover-password") . $token;
-
-    (new MailClass)->SendRecoverPass($url_token, $user['name'], $user['email']);
+    (new MailClass)->SendRequestPassword($fields);
+    $this->setContole("Enviou reset de senha do usuário id: {$user['id']}, Nome: {$user['name']}");
   }
 
   /**

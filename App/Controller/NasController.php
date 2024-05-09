@@ -10,7 +10,7 @@ class NasController extends Controller
 
   public function Index()
   {
-    $this->CheckSession();
+    $this->CheckSession(true);
 
     $this->setTituloPagina("Lista de concentradoras");
     $this->setClassDivContainer("container");
@@ -32,10 +32,11 @@ class NasController extends Controller
   }
 
   /**
-  * Função para retornar concentradora
-  * @return void
-  */
-  public function GetNas(){
+   * Função para retornar concentradora
+   * @return void
+   */
+  public function GetNas()
+  {
     $id = $this->getQuery('id');
     $nas = $this->NasDAO->getOne(" id = {$id} ");
 
@@ -81,6 +82,17 @@ class NasController extends Controller
    */
   public function GetRadiusLog()
   {
-    (new \App\Classes\DockerClass)->GetRadiusLog('radius_log');
+    // (new \App\Classes\DockerClass)->GetRadiusLog('radius_log');
+
+    header('Content-Type: text/event-stream');
+    header('Cache-Control: no-cache');
+
+    while (true) {
+      sleep(3);
+      echo 'data: ' . date("Y-m-d H:i:s") . "\n\n";
+
+      flush();
+      if (connection_aborted()) exit();
+    }
   }
 }

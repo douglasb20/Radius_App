@@ -35,7 +35,7 @@
       <div class="row table-responsive">
         <table
           id="tableNas"
-          class="table table-sm table-striped table-bordered w-100 align-text-top"
+          class="table table-sm table-striped table-bordered table-hover w-100 align-text-top"
         ></table>
       </div>
     </div>
@@ -118,6 +118,13 @@
       GeraTabela();
       filtrosNas.hide();
     });
+
+    // const evt = new EventSource("{{ route().link('radius-log') }}");
+    
+    // evt.onmessage = (e) => {
+    //   console.log(e.data);
+    // };
+
   });
 
   const GeraTabela = () => {

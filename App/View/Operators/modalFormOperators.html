@@ -1,0 +1,104 @@
+<form
+  id="formOperators"
+  name="formOperators"
+  autocomplete="off"
+>
+  <div
+    id="modalFormOperators"
+    class="modal fade"
+    tabindex="-1"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Usuário</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row">
+            <div class="col-12 col-md-12">
+              <label
+                for="username"
+                class="form-label required-label"
+                >Login</label
+              >
+              <input
+                id="id"
+                class="form-control"
+                name="id"
+                type="hidden"
+              />
+              <input
+                id="username"
+                class="form-control"
+                name="username"
+                type="text"
+                autocomplete="off"
+              />
+            </div>
+            <div class="col-12 col-md-12">
+              <label
+                for="email"
+                class="form-label required-label"
+                >Email</label
+              >
+              <input
+                id="email"
+                class="form-control"
+                name="email"
+                type="email"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <label
+                for="name"
+                class="form-label required-label"
+                >Nome</label
+              >
+              <input
+                id="name"
+                class="form-control"
+                name="name"
+                type="text"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <label
+                for="lastname"
+                class="form-label"
+                >Sobrenome</label
+              >
+              <input
+                id="lastname"
+                class="form-control"
+                name="lastname"
+                type="text"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button
+            onclick="CloseModal()"
+            type="button"
+            class="btn btn-outline-danger"
+          >
+            Cancelar
+          </button>
+          <button
+            id="btnSalvar"
+            type="submit"
+            class="btn btn-primary"
+          >
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

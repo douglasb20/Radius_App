@@ -7,7 +7,7 @@ use mysqli;
 abstract class DefaultClassController
 {
   public ?mysqli $masterMysqli;
-  public \App\Model\LogDAO $LogDAO;
+  public \App\Model\LogsDAO $LogsDAO;
 
   function __construct()
   {
@@ -107,7 +107,7 @@ abstract class DefaultClassController
         "description" => $msg
       ];
 
-      $this->LogDAO->insert($bindControle);
+      $this->LogsDAO->insert($bindControle);
     } catch (\Exception $e) {
       throw $e;
     }

@@ -36,9 +36,26 @@
 					<hr class="dropdown-divider">
 				</li>
 
+				{% if GetSessao('id_usuario') == 1 %}
+				<li>
+					<a class="dropdown-item d-flex align-items-center" href="{{ route().link('operators') }}">
+						<i class="fa-regular fa-users-gear"></i>
+						<span>Operadores</span>
+					</a>
+				</li>
+
+				<li>
+					<a class="dropdown-item d-flex align-items-center" href="{{ route().link('logs') }}">
+						<i class="fa-regular fa-memo"></i>
+						<span>Log do sistema</span>
+					</a>
+				</li>
+
+				{% endif %}
+
 				<li>
 					<a id="chageUserPass" class="dropdown-item d-flex align-items-center" href="#">
-						<i class="bi bi-gear"></i>
+						<i class="fa-regular fa-lock"></i>
 						<span>Alterar Senha</span>
 					</a>
 				</li>
@@ -49,7 +66,7 @@
 
 				<li>
 					<a class="dropdown-item d-flex align-items-center" href="{{ route().link('logout') }}">
-						<i class="bi bi-box-arrow-right"></i>
+						<i class="fa-regular fa-sign-out"></i>
 						<span>Sair</span>
 					</a>
 				</li>

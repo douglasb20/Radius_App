@@ -19,10 +19,10 @@ class Controller extends \Core\Defaults\DefaultController
   {
     if (!$this->validateAuth()) {
       if($redirect){
-        route()->redirect("login");
+        route()->redirect("/login");
         die();
       }
-
+      clearSessao();
       throw new UnauthorizedException("Sua sessão foi expirada, recarregue a página para renovar sua sessão");
     }
   }

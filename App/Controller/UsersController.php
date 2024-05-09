@@ -9,7 +9,7 @@ class UsersController extends Controller
 {
   public function Index()
   {
-    $this->CheckSession();
+    $this->CheckSession(true);
 
     $this->setTituloPagina("Página inicial");
     $this->setClassDivContainer("container");

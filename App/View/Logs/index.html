@@ -1,0 +1,96 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+	<style></style>
+{% endblock css %}
+
+{% block body %}
+	{{ include("Logs/modalFiltrosLogs.html") }}
+	<!-- <section class="section"> -->
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header d-flex flex-row justify-content-between align-items-center">
+				<span class="text-title">Logs do sistema</span>
+				<div>
+					<button id="btnFiltros" class="btn btn-outline-info btn-sm">
+						Filtros
+					</button>
+				</div>
+			</div>
+			<div class="card-body mt-4">
+				<div class="row table-responsive">
+					<table id="tableLogs" class="table table-sm table-striped table-bordered w-100 align-text-top"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- </section> -->
+{% endblock body %}
+
+{% block js %}
+<script>
+	const filtrosLogs = new bootstrap.Modal('#modalFiltrosLogs', modalOption);
+
+	$(function () {
+    GeraTabela();
+    ModalDraggable();
+
+		$('#data_de').datepicker({
+				clearBtn: true,
+        endDate: new Date(),
+        todayBtn: "linked",
+        todayHighlight: true
+    });
+    $('#data_de').datepicker().on("changeDate", function({date, ...props}){
+      const ate = $('#data_ate');
+			
+			if(date){
+				ate.datepicker("setStartDate", date);
+				if(!ate.datepicker('getDate')){
+					ate.datepicker("setDate", date);
+				}
+				return;
+			}
+			ate.datepicker("setStartDate", null);
+    })
+
+    $('#data_ate').datepicker({
+        endDate: new Date(),
+        todayBtn: "linked",
+        todayHighlight: true
+    });
+    
+    $('#filtro_operators').select2({
+      width: '100%',
+      dropdownParent: $('#modalFiltrosLogs'),
+      closeOnSelect: false,
+    });
+    $('#btnFiltros').click(() => filtrosLogs.show());
+    $('#btnFiltrar').click(function () {
+      GeraTabela();
+      filtrosLogs.hide();
+    });
+  });
+
+	const GeraTabela = () => {
+    let form = $('#formFiltro').serializeObject();
+
+    $.ajax({ url: "{{ route().link('list-logs') }}", method: 'POST', data: form }).done((resp) => {
+      $('#tableLogs').DataTable({
+        columns: [
+          { data: 'id', title: '#', className: 'text-center w-1' },
+          { data: 'operator_name', title: 'Operador', className: 'text-center w-2' },
+          { data: 'event_date', title: 'Data evento', className: 'text-center w-2', render: renderFormataDataHora },
+          { data: 'description', title: 'Descrição', className: 'text-center ' },
+        ],
+        data: resp,
+        order: [['0', 'asc']],
+        destroy: true,
+        buttons: ['pageLength', exportMenu('pdf', 'excelNumber')],
+      });
+    });
+  };
+
+</script>
+{% endblock js %}

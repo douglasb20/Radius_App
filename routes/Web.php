@@ -9,6 +9,8 @@ Router::get("/logout", "AuthController@Logout",false)->name("logout");
 
 Router::get("/","UsersController@Index",false)->name("home");
 Router::get("/nas","NasController@Index",false)->name("nas");
+Router::get("/operators","OperatorsController@Index",false)->name("operators");
+Router::get("/logs","LogsController@Index",false)->name("logs");
 
 
 ?>

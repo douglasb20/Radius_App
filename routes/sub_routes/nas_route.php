@@ -9,4 +9,5 @@ Router::group("/nas",function(){
     
     Router::put("/update_nas", "NasController@AtualizarNas")->name('update-nas');
     Router::put("/update_nas_status/{id_nas:[0-9}/{status:-?[0-9]}", "NasController@AtualizarNasStatus")->name('change-status');
+    Router::get("/get_radius_log", "NasController@GetRadiusLog")->name('radius-log');
 });

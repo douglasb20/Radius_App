@@ -30,7 +30,7 @@ class DefaultController
   private bool $mostraMenu   = true;
 
   private static string $typeAuth   = "jwt";
-  public \App\Model\LogDAO $LogDAO;
+  public \App\Model\LogsDAO $LogsDAO;
 
   private $post              = [];
   private $put               = [];
@@ -351,7 +351,7 @@ class DefaultController
         "description" => $msg
       ];
 
-      $this->LogDAO->insert($bindControle);
+      $this->LogsDAO->insert($bindControle);
     } catch (\Exception $e) {
       throw $e;
     }

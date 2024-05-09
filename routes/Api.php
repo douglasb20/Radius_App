@@ -10,6 +10,7 @@ include_once("sub_routes/auth_route.php");
 // include_once("sub_routes/admin_route.php");
 include_once("sub_routes/users_route.php");
 include_once("sub_routes/operators_route.php");
+include_once("sub_routes/log_route.php");
 include_once("sub_routes/nas_route.php");
 // include_once("sub_routes/services_route.php");
 
