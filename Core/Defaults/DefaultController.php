@@ -347,7 +347,7 @@ class DefaultController
   {
     try {
       $bindControle = [
-        "user_id" => GetSessao('id_usuario'),
+        "operator_id" => GetSessao('id_usuario'),
         "description" => $msg
       ];
 
