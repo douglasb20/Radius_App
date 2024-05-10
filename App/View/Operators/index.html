@@ -159,6 +159,7 @@
       } else {
         botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 0)" type='button' class='btn btn-danger btn-sm' title='Inativar operador'><i class="fa-regular fa-xmark"></i></button>`;
       }
+        botoes += `<button onclick="ConfirmRequestPassword(${row.id})" type='button' class='btn btn-info btn-sm' title='Inativar operador'><i class="fa-regular fa-refresh"></i></button>`;
     }
     botoes += '</div>';
 
@@ -223,6 +224,16 @@
     formOperators.hide();
     validOperators.refresh();
   };
+
+  const ConfirmRequestPassword = (id_operator) => {
+    confirmaAcao('Confirma enviar a redefinição de senha do operador?', RequestPassword, id_operator);
+  };
+
+  const RequestPassword = (id_operator) => {
+    $.ajax({ url: `{{ route().link('request-op-reset') }}${id_operator}` }).done((resp) => {
+      alerta('Solicitação efetuada com sucesso.<br/><br/>Um email foi enviado para o operador.', 'Sucesso', 'success');
+    });
+  }
 
   const ConfirmToggleStatus = (id_operator, status) => {
     let dados = { id_operator, status };

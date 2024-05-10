@@ -277,12 +277,13 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     $this->setContole("Alterou o status do operador id: {$id_operator} de {$user['status']} para {$status}");
   }
 
-  public function RequestPassword($email){
+  public function RequestPassword($email, $login_page = true){
     $operator = $this->OperatorsDAO->getOne(" email = '{$email}' ");
 
     if(!$operator){
       throw new CommomException("Email não localizado");
     }
+    $msgLog = "";
 
     $field = [
       'id' => $operator['id'],
@@ -290,7 +291,13 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
       'email' => $email,
       'type' => 'operator',
     ];
-    $this->setContole("Solicitou recuperação de senha na tela de login", $operator['id']);
+
+    if($login_page){
+      $msgLog = "Solicitou recuperação de senha na tela de login";
+    }else{
+      $msgLog = "Solicitou recuperação de senha na tela de operadores";
+    }
+    $this->setContole($msgLog, $operator['id']);
     (new MailClass)->SendRequestPassword($field);
   }
 

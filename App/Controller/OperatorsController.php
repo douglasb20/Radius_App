@@ -99,4 +99,20 @@ class OperatorsController extends Controller
     $this->masterMysqli->commit();
   }
 
+  /**
+   * Função para solicitar nova senha
+   * @author Douglas A. Silva
+   * @return void
+   */
+  public function RequestReset()
+  {
+    $this->masterMysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    $this->CheckSession();
+    $id_operator = $this->getQuery("id");
+    $operator = $this->OperatorsDAO->getOne(" id = {$id_operator} ");
+    (new OperatorsClass)->RequestPassword($operator['email'], false);
+
+    $this->masterMysqli->commit();
+  }
+
 }

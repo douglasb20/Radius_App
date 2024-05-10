@@ -10,6 +10,7 @@ Router::group('/operators', function () {
 
   Router::post('/add_operator', "OperatorsController@AddOperator")->name('add-operator');
 
+  Router::get('/reset_password_operator/{id}', "OperatorsController@RequestReset")->name('request-op-reset');
   Router::put('/update_operator', "OperatorsController@UpdateOperator")->name('update-operator');
   Router::put('/update_status_operator/{id}/{status}', "OperatorsController@ToggleOperatorStatus")->name('update-op-status');
 
