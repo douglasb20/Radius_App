@@ -99,11 +99,11 @@ abstract class DefaultClassController
     }
   }
 
-  public function setContole($msg = "")
+  public function setContole($msg = "", $id = null)
   {
     try {
       $bindControle = [
-        "operator_id" => GetSessao('id_usuario'),
+        "operator_id" => empty(GetSessao('id_usuario')) ? $id : GetSessao('id_usuario'),
         "description" => $msg
       ];
 

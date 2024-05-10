@@ -79,7 +79,7 @@ include("Users/modalFormUser.html") }}
     ])
     .addField('#custom_group', [
       {
-        validator: (val, fields) => {
+        validator: (val) => {
           if($("#group").val() === 'custom' && val === ""){
             return false;
           }

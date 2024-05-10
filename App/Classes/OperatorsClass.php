@@ -235,30 +235,10 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
         "password"           => password_hash($password, PASSWORD_BCRYPT),
       ];
       $this->OperatorsDAO->update($bindOperator, "id = '{$id_operator}'");
-      $this->setContole("Operador do ID {$id_operator} alterou a senha por meio de reset de senha");
+      $this->setContole("Operador do ID {$id_operator} alterou a senha por meio de reset de senha", $id_operator);
     } catch (\Exception $e) {
       throw $e;
     }
-  }
-
-  public function AlteraSenha($data)
-  {
-    extract($data);
-
-    $user = $this->UsersDAO->getOne("id = {$id}");
-
-    if (!password_verify($old_password, $user['user_sys_pass'])) {
-      throw new CommomException("Senha antiga não confere");
-    }
-
-    $bindUser = [
-      "user_sys_pass" => password_hash($new_password, PASSWORD_BCRYPT),
-      "user_pass"     => new \MysqliExpression("aes_encrypt('$new_password','lanteca')"),
-      "user_passres"  => 0
-    ];
-    $this->UsersDAO->update($bindUser, "id = {$id}");
-
-    $this->setContole("Alterou própria senha. ID: {$id} - Nome: {$user['user_fullname']}");
   }
 
   public function ValidaEmailUser($email, $id_operator = null)
@@ -295,6 +275,23 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     $user = $this->OperatorsDAO->getOne(" id = {$id_operator} ");
     $this->OperatorsDAO->update(["status" => $status], "id = {$id_operator} ");
     $this->setContole("Alterou o status do operador id: {$id_operator} de {$user['status']} para {$status}");
+  }
+
+  public function RequestPassword($email){
+    $operator = $this->OperatorsDAO->getOne(" email = '{$email}' ");
+
+    if(!$operator){
+      throw new CommomException("Email não localizado");
+    }
+
+    $field = [
+      'id' => $operator['id'],
+      'name' => ucwords($operator['name']),
+      'email' => $email,
+      'type' => 'operator',
+    ];
+    $this->setContole("Solicitou recuperação de senha na tela de login", $operator['id']);
+    (new MailClass)->SendRequestPassword($field);
   }
 
 }

@@ -191,3 +191,16 @@ input.form-control:hover:not(:focus){
 .just-validate-error-label{
   font-size: 0.80rem
 }
+
+.chkPass{
+  display: none;
+}
+.checkPass .chkRej{
+  display: block;
+}
+.checkPass.accept .chkPass{
+  display: block;
+}
+.checkPass.accept .chkRej{
+  display: none;
+}

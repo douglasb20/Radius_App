@@ -14,7 +14,7 @@
     flex-direction: row;
     justify-content: space-between;
     position: relative;
-    font-family: "Poppins" !important;
+    font-family: 'Poppins' !important;
   }
   .loginForm,
   .forgotForm {
@@ -38,11 +38,11 @@
     align-items: center;
     flex-direction: column;
     padding: 10px;
-    font-family: "Poppins", Arial !important;
+    font-family: 'Poppins', Arial !important;
   }
   .headerBox .title,
   .headerBox .subtitle {
-    font-family: "Poppins" !important;
+    font-family: 'Poppins' !important;
     user-select: none;
   }
 
@@ -73,7 +73,7 @@
     outline: none;
     width: 100%;
     padding: 15px 0;
-    padding-right: 25px;
+    padding-right: 35px;
     padding-left: 10px;
     background-color: transparent;
     border: 1.5px solid #999;
@@ -96,6 +96,13 @@
   .iconInput {
     right: 10px;
     color: #999;
+  }
+  .input-float {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
   }
   .wrapInput input:focus:not(.invalid) {
     border-color: rgb(var(--bs-primary-rgb)) !important;
@@ -125,6 +132,11 @@
   small {
     align-self: flex-start;
   }
+  .error_label {
+    align-self: center;
+    width: 80%;
+    margin-top: -10px;
+  }
 
   @media screen and (width < 576px) {
     .loginForm,
@@ -152,146 +164,201 @@
 
 <div class="card formsBox shadow d-flex">
   <div class="loginForm">
-    <div class="headerBox mt-4">
-      <h2 class="mt-3 title">Login</h2>
-      <h5 class="subtitle">Faça o login para entrar no sistema</h5>
-    </div>
-    <div class="caixaInputs">
-      <form id="loginRealForm" autocomplete="none">
-        <div class="wrapInput">
-          <input
-            type="text"
-            name="username"
-            id="username"
-            placeholder=" "
-            autocomplete="none"
-          />
-          <label class="labelInput">Usuário</label>
-          <i class="fa-regular fa-user iconInput fa-lg"></i>
+    <form
+      id="loginRealForm"
+      autocomplete="none"
+    >
+      <div class="headerBox mt-4">
+        <h2 class="mt-3 title">Login</h2>
+        <h5 class="subtitle">Faça o login para entrar no sistema</h5>
+      </div>
+      <div class="caixaInputs">
+        <div class="input-float">
+          <div class="wrapInput">
+            <input
+              type="text"
+              name="username"
+              id="username"
+              placeholder=" "
+              autocomplete="none"
+            />
+            <label class="labelInput">Usuário</label>
+            <i class="fa-regular fa-user iconInput fa-lg"></i>
+          </div>
+          <small class="pl-2 text-red-400 error_label hidden"></small>
         </div>
-        <div class="wrapInput">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder=" "
-            autocomplete="none"
-          />
-          <label class="labelInput">Senha</label>
-          <i class="fa-regular fa-lock iconInput fa-lg"></i>
+        <div class="input-float">
+          <div class="wrapInput">
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder=" "
+              autocomplete="none"
+            />
+            <label class="labelInput">Senha</label>
+            <i class="fa-regular fa-lock iconInput fa-lg"></i>
+          </div>
+          <small class="pl-2 text-red-400 error_label hidden"></small>
         </div>
-      </form>
-    </div>
-    <div class="caixaAcoes justify-content-between">
-      <button type="button" id="btnEntrar" class="btn btn-primary">
-        Entrar
-      </button>
-      <a id="forgotPassword" class="text-primary link" href="#"
-        >Esqueci minha senha</a
-      >
-    </div>
+      </div>
+      <div class="caixaAcoes justify-content-between">
+        <button
+          type="submit"
+          id="btnEntrar"
+          class="btn btn-primary"
+        >
+          Entrar
+        </button>
+        <a
+          id="forgotPassword"
+          class="text-primary link"
+          href="#"
+          >Esqueci minha senha</a
+        >
+      </div>
+    </form>
   </div>
   <div class="forgotForm">
-    <div class="headerBox mt-4">
-      {# <img src="{{constant('ASSETS_IMAGES')}}/logo-ltc.jpg" /> #}
-      <h2 class="mt-3 title">Esqueci minha senha</h2>
-      <h5 class="subtitle">Insira um email válido</h5>
-    </div>
-    <div class="caixaInputs">
-      <form id="forgotRealForm" autocomplete="off">
-        <div class="wrapInput">
-          <input
-            id="user_email"
-            name="user_email"
-            type="text"
-            placeholder=" "
-          />
-          <label class="labelInput">Email</label>
-          <i class="fa-regular fa-envelope iconInput fa-lg"></i>
+    <form
+      id="forgotRealForm"
+      autocomplete="off"
+    >
+      <div class="headerBox mt-4">
+        {# <img src="{{constant('ASSETS_IMAGES')}}/logo-ltc.jpg" /> #}
+        <h2 class="mt-3 title">Esqueci minha senha</h2>
+        <h5 class="subtitle">Insira um email válido</h5>
+      </div>
+      <div class="caixaInputs">
+        <div class="input-float">
+          <div class="wrapInput">
+            <input
+              id="email"
+              name="email"
+              type="text"
+              placeholder=" "
+            />
+            <label class="labelInput">Email</label>
+            <i class="fa-regular fa-envelope iconInput fa-lg"></i>
+          </div>
+          <small class="pl-2 text-red-400 error_label hidden"></small>
         </div>
-      </form>
-    </div>
-    <div class="caixaAcoes">
-      <button id="btnForgotPassword" class="btn btn-primary">Enviar</button>
-      <a id="backLogin" class="text-primary link" href="#">Fazer login</a>
-    </div>
+      </div>
+      <div class="caixaAcoes">
+        <button
+          id="btnForgotPassword"
+          class="btn btn-primary"
+        >
+          Enviar
+        </button>
+        <a
+          id="backLogin"
+          class="text-primary link"
+          href="#"
+          >Fazer login</a
+        >
+      </div>
+    </form>
   </div>
   <div class="areaImage bg-primary"></div>
 </div>
 
 {% endblock body %} {% block js %}
 <script>
-  $("#username, #password").keypress(function (e) {
-    if (e.keyCode === 13) {
-      $("#btnEntrar").click();
-    }
+  const regEmail = /^(?!\s)[\w.-]+\@[\w-]+\.[a-zA-Z]{2,3}(\.[a-zA-z]{2,3})?$/;
+
+  const validForgot = new JustValidate('#forgotRealForm', {
+    errorLabelCssClass: ['hidden'],
+    errorFieldCssClass: ['invalid'],
+    focusInvalidField: false,
+  });
+  const validLogin = new JustValidate('#loginRealForm', {
+    errorLabelCssClass: ['hidden'],
+    errorFieldCssClass: ['invalid'],
+    focusInvalidField: false,
   });
 
-  $("#btnEntrar").click(function () {
-    let required = required_elements($("#loginRealForm input"));
+  validForgot
+    .addField('#email', [
+      {
+        rule: 'required',
+        errorMessage: 'Campo não pode ficar em branco',
+      },
+      {
+        rule: 'customRegexp',
+        value: regEmail,
+        errorMessage: 'Email com formato inválido',
+      },
+    ])
+    .onFail((e) => ErrorLabels(e))
+    .onValidate(({ fields, isSubmitted }) => isSubmitted && ErrorLabels(fields))
+    .onSuccess(function (e) {
+      $('.error_label').addClass('hidden');
+      onRequestForgottenPasseword();
+    });
 
-    if (required.valid) {
-      let formInput = $("#loginRealForm").serializeObject();
+  validLogin
+    .addField('#username', [
+      {
+        rule: 'required',
+        errorMessage: 'Campo não pode ficar em branco',
+      },
+    ])
+    .addField('#password', [
+      {
+        rule: 'required',
+        errorMessage: 'Campo não pode ficar em branco',
+      },
+    ])
+    .onFail((e) => ErrorLabels(e))
+    .onValidate(({ fields, isSubmitted }) => isSubmitted && ErrorLabels(fields))
+    .onSuccess(function (e) {
+      $('.error_label').addClass('hidden');
+      onLogin();
+    });
+
+  const onLogin = () => {
+    let formInput = $('#loginRealForm').serializeObject();
       $.ajax({
         url: "{{ route().link('login-auth') }}",
-        method: "POST",
+        method: 'POST',
         data: formInput,
       }).done(function (data) {
         StartLoading();
         window.location.href = "{{route().link('home')}}";
       });
-    } else {
+  }
+
+  const onRequestForgottenPasseword = () => {
+    let formInput = $('#forgotRealForm').serializeObject();
+    $.ajax({
+      url: `{{ route().link('forgot-password')|trim }}${formInput.email}`,
+    }).done(function (data) {
       alerta(
-        "Campos login e senha não podem ficar em branco.",
-        "Erro validação",
-        "error"
+        'Solicitação de senha realizada com sucesso. Aguarde alguns minutos e confira seu email para recuperação de senha.',
       );
-    }
-  });
+      $('#backLogin').click();
+    });
+  };
 
-  $("#btnForgotPassword").click(function () {
-    let required = required_elements($("#forgotRealForm input"));
-    if (required.valid) {
-      let formInput = $("#forgotRealForm").serializeObject();
-
-      if (!formInput.user_email.match(/^(\w|\W)+@(\W|\w)+\.\w+(\.(\w))?$/)) {
-        alerta("Formato de email inválido.", "Formatação inválida", "error");
-        $("#forgotRealForm input").addClass("invalid");
-        return;
-      }
-
-      $.ajax({
-        url: `{{ route().link('forgot-password')|trim }}${formInput.user_email}`,
-      }).done(function (data) {
-        alerta(
-          "Solicitação de senha realizada com sucesso. Aguarde alguns minutos e confira seu email para recuperação de senha."
-        );
-        $("#backLogin").click();
-      });
-    } else {
-      alerta(
-        "Campo email não pode ficar em branco.",
-        "Erro validação",
-        "error"
-      );
-    }
-  });
-
-  $("#forgotPassword").click(function () {
+  $('#forgotPassword').click(function () {
     if (window.innerWidth < 576) {
-      $(".loginForm").css("right", "100%");
-      $(".forgotForm").css("right", "0%");
+      $('.loginForm').css('right', '100%');
+      $('.forgotForm').css('right', '0%');
     } else {
-      $(".areaImage").css("right", "40%");
+      $('.areaImage').css('right', '40%');
     }
   });
 
-  $("#backLogin").click(function () {
+  $('#backLogin').click(function () {
+    validForgot.refresh();
+    $('.error_label').addClass('hidden');
+    $('.forgotForm input').val('');
     if (window.innerWidth < 576) {
-      $(".loginForm").css("right", "0%");
-      $(".forgotForm").css("right", "-100%");
+      $('.loginForm').css('right', '0%');
+      $('.forgotForm').css('right', '-100%');
     } else {
-      $(".areaImage").css("right", "0");
+      $('.areaImage').css('right', '0');
     }
   });
 </script>

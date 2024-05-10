@@ -122,10 +122,19 @@ class AuthController extends Controller
     if($type === 'user'){
       (new \App\Classes\UsersClass)->UpdateUserPassword($id, $password);
     }else{
-      
+      (new OperatorsClass)->UpdateOperatorPassword($id, $password);
     }
 
     $this->masterMysqli->commit();
+  }
+
+  /**
+  * Função para solicitar recuperação de senha
+  * @return void
+  */
+  public function ForgotPassword(){
+    $email = $this->getQuery('email');
+    (new OperatorsClass)->RequestPassword($email);
   }
 
   public function Logout()
