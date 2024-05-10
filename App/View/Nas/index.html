@@ -1,6 +1,5 @@
 {% extends "layout.html" %} {% block css %}
 <style>
-
   .dataTable td {
     vertical-align: middle !important;
   }
@@ -62,7 +61,24 @@
         errorMessage: 'Campo não pode ficar em branco',
       },
       {
-        validator: (val) => validator.isIP(val, 4),
+        validator: (val) => {
+          switch(true){
+            case validator.isIPRange(val, 4):
+              return true;
+            break;
+            case validator.isIP(val, 4):
+              return true;
+            break;
+            case validator.isIPRange(val, 6):
+              return true;
+            break;
+            case validator.isIP(val, 6):
+              return true;
+            break;
+            default:
+              return false;
+          }
+        },
         errorMessage: "Formato de IP inválido"
       },
     ])

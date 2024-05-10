@@ -42,9 +42,9 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     $this->ValidaEmailUser($email);
     $this->ValidaUsername($username);
     $nome_completo = "";
-    $nome = ucfirst(trim(mb_strtolower($name)));
+    $nome = ucwords(trim(mb_strtolower($name)));
     if (!empty($lastname)) {
-      $sobrenome = ucfirst(trim(mb_strtolower($lastname)));
+      $sobrenome = ucwords(trim(mb_strtolower($lastname)));
       $nome_completo = "{$nome} {$sobrenome}";
     } else {
       $nome_completo = $nome;
@@ -80,9 +80,9 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     $this->ValidaEmailUser($email, $id);
     $this->ValidaUsername($username, $id);
     $nome_completo = "";
-    $nome = ucfirst(trim(mb_strtolower($name)));
+    $nome = ucwords(trim(mb_strtolower($name)));
     if (!empty($lastname)) {
-      $sobrenome = ucfirst(trim(mb_strtolower($lastname)));
+      $sobrenome = ucwords(trim(mb_strtolower($lastname)));
       $nome_completo = "{$nome} {$sobrenome}";
     } else {
       $nome_completo = $nome;
@@ -111,63 +111,11 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     $fields = [
       'id' => $user['id'],
       'name' => $user['name'],
-      'email' => $user['email']
+      'email' => $user['email'],
+      'type' => 'user'
     ];
     (new MailClass)->SendRequestPassword($fields);
     $this->setContole("Enviou reset de senha do usuário id: {$user['id']}, Nome: {$user['name']}");
-  }
-
-  /**
-   * Função para ler token de request de senha
-   * @author Douglas A. Silva
-   */
-  public function RecoverPassword($token)
-  {
-    $dados = [
-      "status" => true,
-      "msg"    => "",
-      "dados"  => []
-    ];
-
-    if (empty($token)) {
-      $dados = [
-        ...$dados,
-        "status" => false,
-        "msg"    => "Token inválido."
-      ];
-    }
-
-    $token     = json_decode($token, true);
-    $user           = $this->UsersDAO->getOne(" id = '{$token['id']}'");
-
-    if ($user['user_forgotpassword'] === "0") {
-
-      $dados = [
-        ...$dados,
-        "status" => false,
-        "msg"    => "<strong>Atenção:</strong> O token de redefinição de senha expirou.<br>
-          Por favor, solicite uma nova redefinição de senha."
-      ];
-    }
-
-    $tokenTime      = $token['expires'];
-    $tempoAtual     = date('Y-m-d H:i:s');
-
-    $tokenLifeTime  = strtotime($tokenTime);
-    $timestampAtual = strtotime($tempoAtual);
-
-    // if ($tokenLifeTime < $timestampAtual) {
-    //   $dados = [
-    //     ...$dados,
-    //     "status" => false,
-    //     "msg"    => "Atenção: O token de redefinição de senha expirou.<br/>
-    //       Por favor, solicite uma nova redefinição de senha."
-    //   ];
-    // }
-
-    $dados["dados"] = ["id" => $user['id']];
-
-    return $dados;
   }
 
   /**
@@ -180,10 +128,11 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     try {
 
       $bindUser = [
-        "password"           => md5($password),
+        "password"           => $password,
         "is_request_password" => 0
       ];
       $this->UsersDAO->update($bindUser, "id = '{$id_user}'");
+      $this->setContole("Usuário do ID {$id_user} alterou a senha por meio de reset de senha");
     } catch (\Exception $e) {
       throw $e;
     }

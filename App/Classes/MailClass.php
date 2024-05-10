@@ -50,7 +50,8 @@ class MailClass extends \Core\Defaults\DefaultClassController
 
     $forgot = [
       "id"           => $fields['id'],
-      "expires"      => date("Y-m-d H:i:s", strtotime("+ 30 minutes"))
+      "expires"      => date("Y-m-d H:i:s", strtotime("+ 30 minutes")),
+      "type" => $fields['type']
     ];
 
     $token = encrypt(json_encode($forgot));

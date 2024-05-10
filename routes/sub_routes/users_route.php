@@ -6,7 +6,6 @@ Router::group('/users', function () {
 
   Router::post('/', "UsersController@ListUsers")->name('list-users');
   Router::get('/{id:[0-9]}', "UsersController@GetUser")->name("get-user");
-  Router::post("/request_recover/{id_user}", "UsersController@RequestRecover")->name("request-recover");
 
   Router::post('/add_user', "UsersController@AdicionarUsuario")->name('add-user');
 

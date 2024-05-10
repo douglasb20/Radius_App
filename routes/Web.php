@@ -4,7 +4,7 @@ use Core\Router;
 
 // Router::get("/","HomeController@index", false);
 Router::get("/login","AuthController@Index",false)->name("login-page");
-Router::get("/recover_password/{forgot_token:[\W|\w]}", "UsersController@RecoverPassword")->name("recover-password");
+Router::get("/recover_password/{forgot_token:[\W|\w]}", "AuthController@RecoverPassword")->name("recover-password");
 Router::get("/logout", "AuthController@Logout",false)->name("logout");
 
 Router::get("/","UsersController@Index",false)->name("home");

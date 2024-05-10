@@ -139,7 +139,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     $this->ValidaEmailUser($email);
     $this->ValidaUsername($username);
     $nome_completo = "";
-    $nome = ucfirst(trim(mb_strtolower($name)));
+    $nome = ucwords(trim(mb_strtolower($name)));
     if (!empty($lastname)) {
       $sobrenome = ucwords(trim(mb_strtolower($lastname)));
       $nome_completo = "{$nome} {$sobrenome}";
@@ -158,7 +158,8 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     $field = [
       'id' => $id,
       'name' => $nome_completo,
-      'email' => $email
+      'email' => $email,
+      'type' => 'operator',
     ];
     $this->setContole("Adicionou operador id: {$id}, Nome: {$nome_completo}");
     (new MailClass)->SendRequestPassword($field);
@@ -170,7 +171,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     $this->ValidaEmailUser($email, $id);
     $this->ValidaUsername($username, $id);
     $nome_completo = "";
-    $nome = ucfirst(trim(mb_strtolower($name)));
+    $nome = ucwords(trim(mb_strtolower($name)));
     if (!empty($lastname)) {
       $sobrenome = ucwords(trim(mb_strtolower($lastname)));
       $nome_completo = "{$nome} {$sobrenome}";
@@ -220,6 +221,26 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     $this->UsersDAO->update($data, $where);
   }
 
+  
+  /**
+   * Função para criar nova senha para o operador
+   * @author Douglas A. Silva
+   * @return void
+   */
+  public function UpdateOperatorPassword(string $id_operator, string $password)
+  {
+    try {
+
+      $bindOperator = [
+        "password"           => password_hash($password, PASSWORD_BCRYPT),
+      ];
+      $this->OperatorsDAO->update($bindOperator, "id = '{$id_operator}'");
+      $this->setContole("Operador do ID {$id_operator} alterou a senha por meio de reset de senha");
+    } catch (\Exception $e) {
+      throw $e;
+    }
+  }
+
   public function AlteraSenha($data)
   {
     extract($data);
@@ -237,70 +258,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     ];
     $this->UsersDAO->update($bindUser, "id = {$id}");
 
-    // $this->setContole("Alterou própria senha. ID: {$id} - Nome: {$user['user_fullname']}");
-  }
-
-  /**
-   * Função para processar pedido de Password forgotten
-   * @author Douglas A. Silva
-   * @return void
-   */
-  public function ForgotPassword(string $user_email)
-  {
-    try {
-      $user = $this->UsersDAO->getAll("user_email = '" . strtolower($user_email) . "'");
-
-      if (empty($user)) {
-        throw new \Exception("Email não localizado.", -1);
-      }
-
-      $user = $user[0];
-
-      $forgot = [
-        "id"           => $user['id'],
-        "expires"      => date("Y-m-d H:i:s", strtotime("+ 3 days"))
-      ];
-
-      $token = encrypt(json_encode($forgot));
-      $url_token = trim(URL_ROOT, "/") . route()->link("recover-password") . $token;
-      $corpoEmail = "Olá,<br /><br />
-          Recebemos uma solicitação para redefinir a sua senha. Clique no link abaixo para criar uma nova senha.<br />
-          Este link é válido por 3 dias a partir do recebimento deste email:
-          <br /><br />
-          {$url_token}
-          <br /><br />
-          Se você não solicitou essa redefinição, por favor, ignore este email.
-          <br /><br />
-          Atenciosamente,
-          Equipe de suporte";
-
-      $m = [
-        "host"     => "mail.lantecatelecom.com.br",
-        "port"     => 587,
-        "SMTPAuth" => true,
-        "user"     => "no-reply@ltcfibra.com.br",
-        "password" => $_ENV['PASSWORD_EMAIL'],
-        "frommail" => "no-reply@ltcfibra.com.br",
-        "fromname" => "LTC Fibra",
-        "tomail"   => $user['user_email'],
-        "toname"   => ucwords(mb_strtolower($user['user_fullname'])),
-        "IsHTML"   => true,
-      ];
-
-      $mail = new \App\Services\PhpMailerService($m);
-      $mail->Subject = "Redefinição de senha";
-
-      $mail->Body = $corpoEmail;
-      $mail->send();
-
-      $this->UsersDAO->update(["user_forgotpassword" => 1], " id = '{$user['id']}' ");
-    } catch (\Exception $e) {
-      if (isset($mail->ErrorInfo)) {
-        throw new \Exception($mail->ErrorInfo);
-      } else {
-        throw $e;
-      }
-    }
+    $this->setContole("Alterou própria senha. ID: {$id} - Nome: {$user['user_fullname']}");
   }
 
   public function ValidaEmailUser($email, $id_operator = null)
