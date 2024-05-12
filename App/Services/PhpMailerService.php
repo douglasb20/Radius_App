@@ -17,7 +17,7 @@ class PhpMailerService extends PHPMailer
       $this->Host       = $_ENV['SMTP_HOST']; // specify main and backup server
       $this->Port       = $_ENV['SMTP_PORT'];
       $this->SMTPAuth   = true; // turn on SMTP authentication
-      $this->SMTPSecure = 'tls';
+      $this->SMTPSecure = $_ENV['SMTP_SECURE'];
       $this->Username   = $_ENV['SMTP_USER']; // SMTP username
       $this->Password   = $_ENV['SMTP_PASSWD']; // SMTP password
       $this->setFrom($_ENV['SMTP_FROMMAIL'], $_ENV['SMTP_FROMNAME']);
