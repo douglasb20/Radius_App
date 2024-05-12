@@ -31,15 +31,15 @@ final class InitialOperators extends AbstractMigration
       ->addIndex('email', ['unique' => true])
       ->create();
 
-      if($this->isMigratingUp()){
-        $bindOperator = [
-          'name' => 'admin',
-          'username' => 'admin',
-          'password' => password_hash("admin", PASSWORD_BCRYPT),
-          'email' => 'admin@teste.com',
-        ];
+    if($this->isMigratingUp()){
+      $bindOperator = [
+        'name' => 'admin',
+        'username' => 'admin',
+        'password' => password_hash("admin", PASSWORD_BCRYPT),
+        'email' => 'admin@teste.com',
+      ];
 
-        $table->insert($bindOperator)->saveData();
-      }
+      $table->insert($bindOperator)->saveData();
+    }
   }
 }

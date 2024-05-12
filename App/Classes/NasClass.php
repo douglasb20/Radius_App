@@ -41,7 +41,7 @@ class NasClass extends \Core\Defaults\DefaultClassController
     ];
 
     $this->NasDAO->update($bindNas, "id = {$id} ");
-
+    (new DockerClass)->RestartRadius();
     $this->setContole(trim("Atualizou as informações da Nas ID: {$id}, " . $msgLog, ", "));
   }
 
@@ -76,6 +76,7 @@ class NasClass extends \Core\Defaults\DefaultClassController
     ];
 
     $id = $this->NasDAO->insert($bindNas);
+    (new DockerClass)->RestartRadius();
     $this->setContole("Adicionou NAS id: {$id}, Nome: {$description}, IP: {$nasname}");
   }
 }

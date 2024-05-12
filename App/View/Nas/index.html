@@ -8,6 +8,7 @@
 {% endblock css %} {% block body %} 
 {{ include("Nas/modalFiltrosNas.html") }} 
 {{ include("Nas/modalFormNas.html") }}
+{{ include("Nas/modalRadiusLog.html") }}
 
 <!-- <section class="section"> -->
 <div class="col-12">
@@ -20,6 +21,13 @@
           class="btn btn-outline-info btn-sm"
         >
           Filtros
+        </button>
+        <button
+          type="button"
+          onClick="RadiusRestart()"
+          class="btn btn-secondary btn-sm"
+        >
+          Restart radius
         </button>
         <button
           type="button"
@@ -47,7 +55,8 @@
 <script>
   const filtrosNas = new bootstrap.Modal('#modalFiltrosNas', modalOption);
   const formNas = new bootstrap.Modal('#modalFormNas', modalOption);
-
+  const radiusLog = new bootstrap.Modal('#modalRadiusLog', modalOption);
+  
   const validNas = new JustValidate('#formNas', {
     // errorLabelCssClass: ['hidden'],
     errorFieldCssClass: ['invalid'],
@@ -134,12 +143,6 @@
       GeraTabela();
       filtrosNas.hide();
     });
-
-    // const evt = new EventSource("{{ route().link('radius-log') }}");
-    
-    // evt.onmessage = (e) => {
-    //   console.log(e.data);
-    // };
 
   });
 
@@ -282,5 +285,13 @@
       GeraTabela();
     });
   };
+
+  const RadiusRestart = () => {
+    $.ajax({ url: `{{ route().link('radius-restart')}}` }).done((resp) => {
+      alerta('Restart efetuado com sucesso.', 'Sucesso', 'success');
+    });
+  }
+
+
 </script>
 {% endblock js %}

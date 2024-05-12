@@ -7,6 +7,7 @@ use App\Classes\NasClass;
 class NasController extends Controller
 {
   public \App\Model\NasDAO $NasDAO;
+  public \App\Model\SystemConfigDAO $SystemConfigDAO;
 
   public function Index()
   {
@@ -80,19 +81,8 @@ class NasController extends Controller
    * @author Douglas A. Silva
    * @return string
    */
-  public function GetRadiusLog()
+  public function RestartRadius()
   {
-    // (new \App\Classes\DockerClass)->GetRadiusLog('radius_log');
-
-    header('Content-Type: text/event-stream');
-    header('Cache-Control: no-cache');
-
-    while (true) {
-      sleep(3);
-      echo 'data: ' . date("Y-m-d H:i:s") . "\n\n";
-
-      flush();
-      if (connection_aborted()) exit();
-    }
+    (new \App\Classes\DockerClass)->RestartRadius();
   }
 }
