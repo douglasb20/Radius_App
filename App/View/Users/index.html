@@ -5,8 +5,10 @@
   }
 </style>
 
-{% endblock css %} {% block body %} {{ include("Users/modalFiltrosUsuarios.html") }} {{
-include("Users/modalFormUser.html") }}
+{% endblock css %} {% block body %} 
+{{ include("Users/modalFiltrosUsuarios.html") }} 
+{{ include("Users/modalFormUser.html") }}
+{{ include("Users/modalLogUser.html") }}
 
 <!-- <section class="section"> -->
 <div class="col-12">
@@ -33,8 +35,10 @@ include("Users/modalFormUser.html") }}
       <div class="row table-responsive">
         <table
           id="tableUsers"
-          class="table table-sm table-striped table-bordered w-100 align-text-top"
-        ></table>
+          class="table table-sm table-striped table-bordered table-hover w-100 align-text-top"
+        >
+          <thead class="table-primary"></thead>
+        </table>
       </div>
     </div>
   </div>
@@ -46,6 +50,7 @@ include("Users/modalFormUser.html") }}
 <script>
   const filtrosUsers = new bootstrap.Modal('#modalFiltrosUsuarios', modalOption);
   const formUsers = new bootstrap.Modal('#modalFormUser', modalOption);
+  const logUser = new bootstrap.Modal('#modalLogUser', modalOption);
 
   const validUser = new JustValidate('#formUser', {
     // errorLabelCssClass: ['hidden'],
@@ -164,13 +169,14 @@ include("Users/modalFormUser.html") }}
   const renderAcoes = (data, type, row) => {
     let botoes = '<div class="d-flex w-full justify-content-center gap-1">';
 
-    botoes += `<button type='button' class='btn btn-primary btn-sm' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
+    botoes += `<button type='button' class='btn btn-outline-primary btn-sm rounded-circle' onclick="EditUser(${row.id})" title='Editar usuário'><i class="fa-regular fa-edit"></i></button>`;
+    botoes += `<button type='button' class='btn btn-outline-success btn-sm rounded-circle' onclick="OpenLog(${row.id}, '${row.name}')" title='Log do usuário'><i class="fa-regular fa-memo"></i></button>`;
     if (row.status === '0') {
-      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 1)" type='button' class='btn btn-success btn-sm' title='Ativar usuário'><i class="fa-regular fa-check"></i></button>`;
+      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 1)" type='button' class='btn btn-outline-success btn-sm rounded-circle' title='Ativar usuário'><i class="fa-regular fa-user-unlock"></i></button>`;
     } else {
-      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 0)" type='button' class='btn btn-danger btn-sm' title='Inativar usuário'><i class="fa-regular fa-xmark"></i></button>`;
+      botoes += `<button onclick="ConfirmToggleStatus(${row.id}, 0)" type='button' class='btn btn-outline-danger btn-sm rounded-circle' title='Inativar usuário'><i class="fa-regular fa-user-lock"></i></button>`;
     }
-    botoes += `<button onclick="ConfirmRequestPassword(${row.id})" type='button' class='btn btn-info btn-sm' title='Enviar recuperação de senha'><i class="fa-regular fa-refresh"></i></button>`;
+    botoes += `<button onclick="ConfirmRequestPassword(${row.id})" type='button' class='btn btn-outline-info btn-sm rounded-circle' title='Enviar recuperação de senha'><i class="fa-regular fa-refresh"></i></button>`;
     botoes += '</div>';
 
     return botoes;
@@ -284,6 +290,29 @@ include("Users/modalFormUser.html") }}
     $.ajax({ url: `{{route().link('update-status')}}${id_user}/${status}`, method: 'PUT' }).done((resp) => {
       alerta('Status atualizado com sucesso.', 'Sucesso', 'success');
       GeraTabela();
+    });
+  };
+
+  const OpenLog = (id, name) => {
+    
+    $.ajax({ url: `{{ route().link('log-user') }}${id}`})
+    .done((resp) => {
+      $("#modalLogUser .modal-title").text(`Logo do usuário ${name}`)
+      $('#tableLogUsers').DataTable({
+        columns: [
+          { data: 'callingstationid', title: 'IP', className: 'text-center w-2' },
+          { data: 'realm', title: 'Local', className: 'text-center ' },
+          { data: 'nasipaddress', title: 'IP RB', className: 'text-center ' },
+          { data: 'acctstarttime', title: 'Inicio', className: 'text-center ', render: renderFormataDataHora },
+          { data: 'acctstoptime', title: 'Fim', className: 'text-center ', render: renderFormataDataHora },
+          { data: 'duracao', title: 'Duração', className: 'text-center ' },
+        ],
+        data: resp,
+        order: [['0', 'asc']],
+        destroy: true,
+        buttons: ['pageLength', exportMenu('pdf', 'excelNumber')],
+      });
+      logUser.show()
     });
   };
 </script>

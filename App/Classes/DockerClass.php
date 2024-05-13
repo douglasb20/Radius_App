@@ -23,17 +23,9 @@ class DockerClass extends \Core\Defaults\DefaultClassController
     ignore_user_abort(true);
     $cmd = $this->SystemConfigDAO->getOne(" `key` = 'radius_log' ");
     if (!empty($cmd['value'])) {
-      header('Content-Type: text/event-stream');
-      header('Cache-Control: no-cache');
 
-      $p = popen($cmd['value'], "r");
-      while ($log = fgets($p, 2048)) {
-
-        echo 'data: ' . $log . "\n\n";
-
-        flush();
-        if (connection_aborted()) exit();
-      }
+      $log = shell_exec($cmd['value']);
+      return $log;
     }
   }
 }

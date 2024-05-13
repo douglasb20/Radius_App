@@ -204,3 +204,7 @@ input.form-control:hover:not(:focus){
 .checkPass.accept .chkRej{
   display: none;
 }
+
+.modal-6{
+  --bs-modal-width: 50%;
+}

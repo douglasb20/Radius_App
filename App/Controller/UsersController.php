@@ -94,4 +94,11 @@ class UsersController extends Controller
 
     $this->masterMysqli->commit();
   }
+
+  public function LogUser(){
+    $id = $this->getQuery('id');
+    $logs = (new UsersClass)->LogUser($id);
+
+    $this->data = $logs;
+  }
 }

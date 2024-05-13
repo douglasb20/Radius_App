@@ -272,9 +272,12 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
 
   public function ToggleOperatorStatus(int $id_operator, int $status)
   {
+    $lStatus = ['inativo', 'ativo'];
     $user = $this->OperatorsDAO->getOne(" id = {$id_operator} ");
     $this->OperatorsDAO->update(["status" => $status], "id = {$id_operator} ");
-    $this->setContole("Alterou o status do operador id: {$id_operator} de {$user['status']} para {$status}");
+    $this->setContole(
+      "Alterou o status do operador id: {$id_operator} de {$lStatus[$user['status']]} para {$lStatus[$status]}"
+    );
   }
 
   public function RequestPassword($email, $login_page = true){

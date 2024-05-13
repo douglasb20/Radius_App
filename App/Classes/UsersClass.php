@@ -8,6 +8,7 @@ use App\Services\PhpMailerService;
 class UsersClass extends \Core\Defaults\DefaultClassController
 {
   public \App\Model\UsersDAO $UsersDAO;
+  public \App\Model\RadacctDAO $RadacctDAO;
 
   public function ListUsers($fields)
   {
@@ -62,7 +63,8 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     $fields = [
       'id' => $id,
       'name' => $nome_completo,
-      'email' => $email
+      'email' => $email,
+      'type' => 'user'
     ];
     $this->setContole("Adicionou usuário id: {$id}, Nome: {$nome_completo}");
     (new MailClass)->SendRequestPassword($fields);
@@ -175,8 +177,17 @@ class UsersClass extends \Core\Defaults\DefaultClassController
    */
   public function ToggleUserStatus(int $id_user, int $status)
   {
+    $lStatus = ['inativo', 'ativo'];
     $user = $this->UsersDAO->getOne(" id = {$id_user} ");
     $this->UsersDAO->update(["status" => $status], "id = {$id_user} ");
-    $this->setContole("Alterou o status do usuário id: {$id_user} de {$user['status']} para {$status}");
+    $this->setContole("Alterou o status do usuário id: {$id_user} de {$lStatus[$user['status']]} para {$lStatus[$status]}");
+  }
+
+  public function LogUser($id){
+    $user = $this->UsersDAO->getOne(" id = {$id} ");
+    $log = $this->RadacctDAO->RelacaoUso($user['username']);
+
+    return $log;
+
   }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Classes\DockerClass;
 use App\Classes\NasClass;
 
 class NasController extends Controller
@@ -77,12 +78,16 @@ class NasController extends Controller
   }
 
   /**
-   * Função para capturar logs do radius
+   * Função para restartar radius
    * @author Douglas A. Silva
    * @return string
    */
   public function RestartRadius()
   {
-    (new \App\Classes\DockerClass)->RestartRadius();
+    (new DockerClass)->RestartRadius();
+  }
+
+  public function GetRadiusLog(){
+    $this->data = (new DockerClass)->GetRadiusLog();
   }
 }
