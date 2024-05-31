@@ -134,7 +134,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
         "is_request_password" => 0
       ];
       $this->UsersDAO->update($bindUser, "id = '{$id_user}'");
-      $this->setContole("Usuário do ID {$id_user} alterou a senha por meio de reset de senha");
+      // $this->setContole("Usuário do ID {$id_user} alterou a senha por meio de reset de senha");
     } catch (\Exception $e) {
       throw $e;
     }
