@@ -66,7 +66,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       'email' => $email,
       'type' => 'user'
     ];
-    $this->setContole("Adicionou usuário id: {$id}, Nome: {$nome_completo}");
+    $this->setControle("Adicionou usuário id: {$id}, Nome: {$nome_completo}");
     (new MailClass)->SendRequestPassword($fields);
   }
 
@@ -99,7 +99,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     ];
 
     $this->UsersDAO->update($bindUser, " id = {$id} ");
-    $this->setContole("Alterou usuário id: {$id}, Nome: {$nome_completo}");
+    $this->setControle("Alterou usuário id: {$id}, Nome: {$nome_completo}");
   }
 
   /**
@@ -117,7 +117,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
       'type' => 'user'
     ];
     (new MailClass)->SendRequestPassword($fields);
-    $this->setContole("Enviou reset de senha do usuário id: {$user['id']}, Nome: {$user['name']}");
+    $this->setControle("Enviou reset de senha do usuário id: {$user['id']}, Nome: {$user['name']}");
   }
 
   /**
@@ -134,7 +134,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
         "is_request_password" => 0
       ];
       $this->UsersDAO->update($bindUser, "id = '{$id_user}'");
-      // $this->setContole("Usuário do ID {$id_user} alterou a senha por meio de reset de senha");
+      // $this->setControle("Usuário do ID {$id_user} alterou a senha por meio de reset de senha");
     } catch (\Exception $e) {
       throw $e;
     }
@@ -180,7 +180,7 @@ class UsersClass extends \Core\Defaults\DefaultClassController
     $lStatus = ['inativo', 'ativo'];
     $user = $this->UsersDAO->getOne(" id = {$id_user} ");
     $this->UsersDAO->update(["status" => $status], "id = {$id_user} ");
-    $this->setContole("Alterou o status do usuário id: {$id_user} de {$lStatus[$user['status']]} para {$lStatus[$status]}");
+    $this->setControle("Alterou o status do usuário id: {$id_user} de {$lStatus[$user['status']]} para {$lStatus[$status]}");
   }
 
   public function LogUser($id){

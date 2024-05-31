@@ -343,7 +343,7 @@ class DefaultController
     }
   }
 
-  public function setContole($msg = "")
+  public function setControle($msg = "")
   {
     try {
       $bindControle = [

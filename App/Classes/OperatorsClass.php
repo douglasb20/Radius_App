@@ -94,14 +94,14 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
       ];
 
       $this->OperatorsDAO->update($bindUser, "id = '{$user['id']}'");
-      $this->setContole("Entrou no sistema");
+      $this->setControle("Entrou no sistema");
     } catch (\Exception $e) {
       throw $e;
     }
   }
 
   public function Logout(){
-    $this->setContole("Saiu do sistema");
+    $this->setControle("Saiu do sistema");
     clearSessao();
   }
 
@@ -161,7 +161,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
       'email' => $email,
       'type' => 'operator',
     ];
-    $this->setContole("Adicionou operador id: {$id}, Nome: {$nome_completo}");
+    $this->setControle("Adicionou operador id: {$id}, Nome: {$nome_completo}");
     (new MailClass)->SendRequestPassword($field);
   }
 
@@ -186,7 +186,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     ];
 
     $this->OperatorsDAO->update($bindOperator, "id = {$id}");
-    $this->setContole("Alterou operador id: {$id}");
+    $this->setControle("Alterou operador id: {$id}");
   }
 
   public function ResetSenha($data, $id_emp)
@@ -235,7 +235,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
         "password"           => password_hash($password, PASSWORD_BCRYPT),
       ];
       $this->OperatorsDAO->update($bindOperator, "id = '{$id_operator}'");
-      $this->setContole("Operador do ID {$id_operator} alterou a senha por meio de reset de senha", $id_operator);
+      $this->setControle("Operador do ID {$id_operator} alterou a senha por meio de reset de senha", $id_operator);
     } catch (\Exception $e) {
       throw $e;
     }
@@ -275,7 +275,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     $lStatus = ['inativo', 'ativo'];
     $user = $this->OperatorsDAO->getOne(" id = {$id_operator} ");
     $this->OperatorsDAO->update(["status" => $status], "id = {$id_operator} ");
-    $this->setContole(
+    $this->setControle(
       "Alterou o status do operador id: {$id_operator} de {$lStatus[$user['status']]} para {$lStatus[$status]}"
     );
   }
@@ -300,7 +300,7 @@ class OperatorsClass extends \Core\Defaults\DefaultClassController
     }else{
       $msgLog = "Solicitou recuperação de senha na tela de operadores";
     }
-    $this->setContole($msgLog, $operator['id']);
+    $this->setControle($msgLog, $operator['id']);
     (new MailClass)->SendRequestPassword($field);
   }
 

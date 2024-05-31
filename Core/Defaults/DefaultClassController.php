@@ -99,7 +99,7 @@ abstract class DefaultClassController
     }
   }
 
-  public function setContole($msg = "", $id = null)
+  public function setControle($msg = "", $id = null)
   {
     try {
       $bindControle = [

@@ -54,7 +54,7 @@ class OperatorsController extends Controller
     ];
 
     $this->OperatorsDAO->update($bindPass, " id = " . GetSessao('id_usuario') );
-    $this->setContole("Alterou a própria senha");
+    $this->setControle("Alterou a própria senha");
 
     $this->masterMysqli->commit();
   }
