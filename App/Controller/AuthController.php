@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Classes\OperatorsClass;
-use App\Exceptions\UnauthorizedException;
 
 class AuthController extends Controller
 {
